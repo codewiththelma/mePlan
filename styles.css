@@ -2774,6 +2774,11 @@ input[type="number"] {
     margin-right: auto;
     padding-top: 1rem;
   }
+  .options-sheet {
+    height: 30%;
+    margin-left: 80px;
+    width: calc(100% - 80px);
+  }
 }
 @media (max-width: 450px) {
   .bottom-nav {

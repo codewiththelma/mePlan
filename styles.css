@@ -48,7 +48,7 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  padding-bottom: 2rem; 
+  padding-bottom: 4rem; 
 }
 .brand-logo {
   width: 28px;
@@ -62,7 +62,7 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
+  width: 100%;
   background: var(--bg-nav);
   padding: 1.2rem 1.2rem 0.6rem;
   display: flex;
@@ -338,15 +338,16 @@ body {
 
 .bottom-nav {
   position: fixed;
-  left: 0;
-  right: 0;
   bottom: 0;
+  left: 0;
+  width: 100%;
   background: var(--bg-nav);
   border-top: 1px solid rgba(148, 163, 184, 0.4);
   display: flex;
+  align-items: center;
+  padding: 18px 0;
   justify-content: space-around;
-  padding: 0.35rem 0;
-  z-index: 20;
+  z-index: 9990;
 }
 
 .nav-item {
@@ -2244,7 +2245,7 @@ body {
  ************************/
 .fab-add {
   position: fixed;
-  bottom: 4rem;
+  bottom: 7rem;
   right: 20px;
   background: var(--accent);
   color: white;
@@ -2660,7 +2661,7 @@ input[type="number"] {
   text-align: center;
   min-width: 62px;
   cursor: pointer;
-  box-shadow: var(--shadow-soft);
+
 }
 
 .habit-date-weekday {
@@ -2737,4 +2738,57 @@ input[type="number"] {
 
 .home-habit-mark.done i {
   color: var(--accent);
+}
+@media (min-width: 900px) {
+  .bottom-nav {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 80px;
+    height: 100vh;
+    border-top: none;
+    border-right: 1px solid #333;
+  }
+
+  .nav-item {
+    margin: 20px 0;
+  }
+
+  .nav-item i {
+    margin-bottom: 6px;
+  }
+
+  body {
+    margin-left: 80px; /* prevent content overlap with sidebar */
+  }
+  .top-bar {
+    left: 80px;             /* <— this moves it off the sidebar */
+    width: calc(100% - 80px);
+  }
+  .main-content {
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 1rem;
+  }
+}
+@media (max-width: 450px) {
+  .bottom-nav {
+    padding-bottom: 2.5rem;
+    padding-top: 1rem;
+  }
+  main{
+    padding-bottom: 3rem;
+  }
+  .options-sheet {
+  height: 30%;
+}
+}
+.model-content input,
+.model-content textarea,
+.model-content select {
+  font-size: 16px; 
 }

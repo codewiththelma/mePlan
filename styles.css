@@ -2787,8 +2787,8 @@ input[type="number"] {
   height: 30%;
 }
 }
-.model-content input,
-.model-content textarea,
-.model-content select {
+.modal-card input,
+.modal-card textarea,
+.modal-card select {
   font-size: 16px; 
 }

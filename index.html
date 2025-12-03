@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mePlan+ – Home</title>
+
+  <!-- Google Font: Nunito -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="logo-dark.png">
+  <link rel="apple-touch-icon" href="logo.png">
+
+
+  <!-- Font Awesome (Free) -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-root">
+    <!-- HEADER -->
+    <header class="top-bar">
+      <div class="brand">
+        <img id="brandLogo" class="brand-logo" src="logo.png" alt="logo">
+        <span class="brand-name">mePlan<span class="brand-plus"></span></span>
+      </div>
+
+      <button id="themeToggle" class="icon-button" aria-label="Toggle theme">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+      <!-- TODAY CARD -->
+      <section class="card today">
+        <p class="today-label" id="todayLabel">Today • Wednesday, 6 September</p>
+        <div id="todayEvents" class="today-events">
+          <!-- Filled by JS -->
+        </div>
+      </section>
+
+      <!-- VERSE / QUOTE CARD -->
+      <section class="card verse">
+        <div class="card-title-row">
+          <h2 class="card-title">Verse of the Day</h2>
+          <i class="fa-solid fa-book-open verse-icon"></i>
+        </div>
+        <p id="quoteText" class="verse-text">Loading verse…</p>
+        <p id="quoteRef" class="verse-ref"></p>
+      </section>
+
+      <!-- HABITS FOR TODAY CARD -->
+    <section class="card today-habits">
+      <div class="card-title-row">
+        <h2 class="card-title">Habits for Today</h2>
+        <i class="fa-solid fa-fire habits-icon"></i>
+      </div>
+
+      <div id="todayHabits" class="today-habits-list">
+        <!-- Filled by JS -->
+      </div>
+    </section>
+
+
+      <!-- MINI MODULE CARDS -->
+      <section class="mini-grid">
+        <button class="mini-card" data-target="monthly">
+          <div class="mini-card-header">
+            <i class="fa-solid fa-calendar"></i>
+          </div>
+          <div class="mini-card-body">
+            <h3>Monthly Planner</h3>
+            <p>Your month at a glance. Plans, reminders, Events.</p>
+          </div>
+        </button>
+
+        <button class="mini-card" data-target="monthly-todo">
+          <div class="mini-card-header">
+            <i class="fa-solid fa-list-check"></i>
+          </div>
+          <div class="mini-card-body">
+            <h3>Monthly To-Do</h3>
+            <p>Simple list of stuff you need to get done this month</p>
+          </div>
+        </button>
+
+        <button class="mini-card" data-target="yearly-checklist">
+          <div class="mini-card-header">
+            <i class="fa-solid fa-bullseye"></i>
+          </div>
+          <div class="mini-card-body">
+            <h3>Yearly Checklist</h3>
+            <p>Categorize your goals for the year</p>
+          </div>
+        </button>
+
+        <button class="mini-card" data-target="savings">
+          <div class="mini-card-header">
+            <i class="fa-solid fa-piggy-bank"></i>
+          </div>
+          <div class="mini-card-body">
+            <h3>Savings Tracker</h3>
+            <p>Track your savings</p>
+          </div>
+        </button>
+
+        <button class="mini-card" data-target="habits">
+          <div class="mini-card-header">
+            <i class="fa-solid fa-lightbulb"></i>
+          </div>
+          <div class="mini-card-body">
+            <h3>Habits</h3>
+            <p>Track the habits you’re trying to stay consistent with.</p>
+          </div>
+        </button>
+
+        <button class="mini-card" data-target="schedule-list">
+          <div class="mini-card-header">
+            <i class="fa-solid fa-clock"></i>
+          </div>
+          <div class="mini-card-body">
+            <h3>Schedule</h3>
+            <p>Your week at a glance, timetables, plans etc</p>
+          </div>
+        </button>
+      </section>
+    </main>
+
+    <!-- BOTTOM NAV (MyTrackr-style) -->
+    <nav class="bottom-nav">
+      <button class="nav-item nav-active" data-nav="home">
+        <i class="fa-solid fa-house"></i>
+        <span>Home</span>
+      </button>
+      <button class="nav-item" data-nav="calendar">
+        <i class="fa-solid fa-calendar-days"></i>
+        <span>Calendar</span>
+      </button>
+      <button class="nav-item" id="optionsBtn">
+      <i class="fa-solid fa-circle-chevron-up"></i>
+      <span>More</span>
+      </button>
+    </nav>
+
+  </div>
+  <div id="optionsSheet" class="options-sheet hidden">
+  <div class="options-handle"></div>
+  <div class="options-close" id="optionsCloseBtn">
+  <i class="fa-solid fa-xmark"></i>
+  </div>
+
+
+  <div class="options-grid">
+  <button onclick="location.href='monthly.html'">
+    <i class="fa-solid fa-calendar" style="color:rgb(25, 250, 40);"></i>
+    Monthly Planner
+  </button>
+
+  <button onclick="location.href='monthly-todo.html'">
+    <i class="fa-solid fa-list-check" style="color:rgb(247, 43, 189);"></i>
+    Monthly To-Do
+  </button>
+
+  <button onclick="location.href='yearly-checklist.html'">
+    <i class="fa-solid fa-bullseye" style="color:rgb(243, 150, 19);"></i>
+    Checklist
+  </button>
+
+  <button onclick="location.href='savings.html'">
+    <i class="fa-solid fa-piggy-bank" style="color:rgb(239, 21, 21);"></i>
+    Savings
+  </button>
+
+  <button onclick="location.href='habits.html'">
+    <i class="fa-solid fa-lightbulb" style="color:rgb(42, 8, 234);"></i>
+    Habits
+  </button>
+
+  <button onclick="location.href='schedule-list.html'">
+    <i class="fa-solid fa-clock" style="color:rgb(251, 247, 45);"></i>
+    Schedule
+  </button>
+</div>
+
+</div>
+
+<div id="optionsBackdrop" class="options-backdrop hidden"></div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>

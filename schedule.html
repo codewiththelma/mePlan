@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mePlan+ – Schedule</title>
+
+  <!-- Nunito -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="logo-dark.png">
+  <link rel="apple-touch-icon" href="logo.png">
+
+
+
+  <!-- Font Awesome -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-root">
+    <!-- HEADER -->
+    <header class="top-bar">
+      <div class="brand monthly-brand">
+        <button class="back-button" onclick="window.history.back();">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <span class="brand-name">Schedule<span class="brand-plus">+</span></span>
+      </div>
+
+      <button id="themeToggle" class="icon-button" aria-label="Toggle theme">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+    </header>
+
+    <!-- MAIN -->
+    <main class="main-content schedule-main">
+      <!-- Schedule header/meta -->
+      <section class="card schedule-header-card">
+        <div class="schedule-header-row">
+          <div>
+            <h1 id="scheduleTitle" class="schedule-header-title">Schedule</h1>
+            <p id="scheduleSubtitle" class="schedule-header-subtitle">
+              Day view · 06:00 – 22:00
+            </p>
+          </div>
+          <div class="schedule-day-nav">
+            <button id="prevDayBtn" class="icon-button-sm" aria-label="Previous day">
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <span id="currentDayLabel" class="schedule-day-label">Monday</span>
+            <button id="nextDayBtn" class="icon-button-sm" aria-label="Next day">
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="schedule-day-tabs">
+          <button class="day-tab" data-day-tab="mon">Mon</button>
+          <button class="day-tab" data-day-tab="tue">Tue</button>
+          <button class="day-tab" data-day-tab="wed">Wed</button>
+          <button class="day-tab" data-day-tab="thu">Thu</button>
+          <button class="day-tab" data-day-tab="fri">Fri</button>
+          <button class="day-tab" data-day-tab="sat">Sat</button>
+          <button class="day-tab" data-day-tab="sun">Sun</button>
+        </div>
+      </section>
+
+      <!-- DAY TIMELINE -->
+      <section class="day-schedule-shell">
+        <div class="day-schedule-grid">
+          <!-- Times column -->
+          <div class="day-times-column" id="dayTimesColumn">
+            <!-- JS adds 06:00–22:00 labels -->
+          </div>
+
+          <!-- Events column -->
+          <div class="day-events-column" id="dayEventsColumn">
+            <!-- JS positions coloured bars here -->
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- FAB (add event) -->
+    <button id="addEventFab" class="fab-add" aria-label="Add event">
+      <i class="fa-solid fa-plus"></i>
+    </button>
+
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav">
+      <button class="nav-item" onclick="window.location.href='index.html'">
+        <i class="fa-solid fa-house"></i>
+        <span>Home</span>
+      </button>
+      <button class="nav-item" onclick="window.location.href='calendar.html'">
+        <i class="fa-solid fa-calendar-days"></i>
+        <span>Calendar</span>
+      </button>
+      <button class="nav-item" id="optionsBtn">
+      <i class="fa-solid fa-circle-chevron-up"></i>
+      <span>More</span>
+      </button>
+    </nav>
+
+    <!-- EVENT MODAL -->
+    <div id="eventModal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h2 id="eventModalTitle">Add Slot</h2>
+          <button id="closeEventModal" class="modal-close">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <form id="eventForm" class="modal-body">
+          <input type="hidden" id="eventId" />
+
+          <label class="field-label">
+            Title
+            <input
+              type="text"
+              id="eventTitleInput"
+              class="input"
+              placeholder="e.g. OS Lecture"
+              required
+            />
+          </label>
+
+          <label class="field-label">
+            Day
+            <select id="eventDayInput" class="input" required>
+              <option value="mon">Monday</option>
+              <option value="tue">Tuesday</option>
+              <option value="wed">Wednesday</option>
+              <option value="thu">Thursday</option>
+              <option value="fri">Friday</option>
+              <option value="sat">Saturday</option>
+              <option value="sun">Sunday</option>
+            </select>
+          </label>
+
+          <div class="time-row">
+            <label class="field-label" style="flex:1;">
+              Start
+              <div class="custom-time-group">
+                <div class="custom-dropdown" id="startHourDropdown">
+                  <span class="selected-value" id="startHourLabel">09</span>
+                  <div class="dropdown-menu" id="startHourMenu"></div>
+                </div>
+                <div class="custom-dropdown" id="startMinDropdown">
+                  <span class="selected-value" id="startMinLabel">00</span>
+                  <div class="dropdown-menu" id="startMinMenu"></div>
+                </div>
+              </div>
+            </label>
+
+            <label class="field-label" style="flex:1;">
+              End
+              <div class="custom-time-group">
+                <div class="custom-dropdown" id="endHourDropdown">
+                  <span class="selected-value" id="endHourLabel">10</span>
+                  <div class="dropdown-menu" id="endHourMenu"></div>
+                </div>
+
+                <div class="custom-dropdown" id="endMinDropdown">
+                  <span class="selected-value" id="endMinLabel">00</span>
+                  <div class="dropdown-menu" id="endMinMenu"></div>
+                </div>
+              </div>
+            </label>
+          </div>
+
+
+
+          <label class="field-label">
+            Colour
+            <div class="color-row">
+              <button type="button" class="color-dot" data-color="#f97373"></button>
+              <button type="button" class="color-dot" data-color="#fb923c"></button>
+              <button type="button" class="color-dot" data-color="#FFD9B5"></button>
+              <button type="button" class="color-dot" data-color="#C7EBD0"></button>
+              <button type="button" class="color-dot" data-color="#38bdf8"></button>
+              <button type="button" class="color-dot" data-color="#a855f7"></button>
+              <button type="button" class="color-dot" data-color="#F7E8A4"></button>
+            </div>
+            <input type="hidden" id="eventColorInput" required />
+          </label>
+
+          <label class="field-label">
+            Location
+            <input
+              type="text"
+              id="eventLocationInput"
+              class="input"
+              placeholder="e.g. Room G32"
+            />
+          </label>
+
+          <label class="field-label">
+            Description (optional)
+            <input
+              type="text"
+              id="eventDescInput"
+              class="input"
+              placeholder="Notes, assignment, etc."
+            />
+          </label>
+
+          <div class="modal-footer">
+            <button type="button" id="deleteEventBtn" class="btn-outline hidden">
+              <i class="fa-solid fa-trash"></i> Delete
+            </button>
+
+            <button type="submit" class="btn-primary">
+              <i class="fa-solid fa-check"></i> Save
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- DELETE POPUP -->
+    <div id="deletePopup" class="popup-overlay hidden">
+      <div class="popup-card">
+        <p class="popup-text">Delete this slot?</p>
+        <div class="popup-buttons">
+          <button id="cancelDelete" class="popup-btn cancel-btn">Cancel</button>
+          <button id="confirmDelete" class="popup-btn delete-btn">Delete</button>
+        </div>
+      </div>
+    </div>
+
+      <div id="errorPopup" class="success-overlay hidden">
+    <div class="success-card">
+      <div class="success-icon" style="color:#ef4444;"><i class="fa-solid fa-xmark-circle"></i></div>
+      <div id="errorMessage" class="success-text"></div>
+    </div>
+  </div>
+
+
+    <!-- SUCCESS POPUP -->
+    <div id="successPopup" class="success-overlay hidden">
+      <div class="success-card">
+        <i class="fa-solid fa-check-circle success-icon"></i>
+        <p id="successMessage" class="success-text">Saved!</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="optionsSheet" class="options-sheet hidden">
+  <div class="options-handle"></div>
+  <div class="options-close" id="optionsCloseBtn">
+  <i class="fa-solid fa-xmark"></i>
+  </div>
+
+
+  <div class="options-grid">
+  <button onclick="location.href='monthly.html'">
+    <i class="fa-solid fa-calendar" style="color:rgb(25, 250, 40);"></i>
+    Monthly Planner
+  </button>
+
+  <button onclick="location.href='monthly-todo.html'">
+    <i class="fa-solid fa-list-check" style="color:rgb(247, 43, 189);"></i>
+    Monthly To-Do
+  </button>
+
+  <button onclick="location.href='yearly-checklist.html'">
+    <i class="fa-solid fa-bullseye" style="color:rgb(243, 150, 19);"></i>
+    Checklist
+  </button>
+
+  <button onclick="location.href='savings.html'">
+    <i class="fa-solid fa-piggy-bank" style="color:rgb(239, 21, 21);"></i>
+    Savings
+  </button>
+
+  <button onclick="location.href='habits.html'">
+    <i class="fa-solid fa-lightbulb" style="color:rgb(42, 8, 234);"></i>
+    Habits
+  </button>
+
+  <button onclick="location.href='schedule-list.html'">
+    <i class="fa-solid fa-clock" style="color:rgb(251, 247, 45);"></i>
+    Schedule
+  </button>
+</div>
+
+</div>
+
+<div id="optionsBackdrop" class="options-backdrop hidden"></div>
+  <script type="module" src="schedule.js"></script>
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mePlan+ – Monthly To-Do</title>
+
+  <!-- Nunito -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="logo-dark.png">
+  <link rel="apple-touch-icon" href="logo.png">
+
+
+
+  <!-- Font Awesome -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-root">
+    <!-- HEADER -->
+    <header class="top-bar">
+      <div class="brand monthly-brand">
+        <button class="back-button" onclick="window.history.back();">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <span class="brand-name">Todo<span class="brand-plus">+</span></span>
+      </div>
+
+      <button id="themeToggle" class="icon-button" aria-label="Toggle theme">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content todo-main">
+      <!-- MONTH CONTROLS -->
+      <section class="card todo-controls">
+        <div class="month-nav">
+          <button id="prevMonth" class="month-arrow">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+
+          <div class="month-title-wrap">
+            <h1 id="todoMonthTitle" class="month-title">Month</h1>
+            <p class="month-subtitle">Tasks for this month</p>
+          </div>
+
+          <button id="nextMonth" class="month-arrow">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
+      </section>
+
+      <!-- TODO LIST -->
+      <section>
+        <ul id="todoList" class="todo-list">
+          <!-- Filled by JS -->
+        </ul>
+
+        <p id="todoEmptyState" class="todo-empty hidden">
+          No tasks yet for this month. Tap the plus to add one ✨
+        </p>
+      </section>
+    </main>
+
+    <!-- ADD TASK FAB -->
+    <button id="addTodoFab" class="fab-add" aria-label="Add task">
+      <i class="fa-solid fa-plus"></i>
+    </button>
+
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav">
+      <button class="nav-item" onclick="window.location.href='index.html'">
+        <i class="fa-solid fa-house"></i>
+        <span>Home</span>
+      </button>
+      <button class="nav-item" onclick="window.location.href='calendar.html'">
+        <i class="fa-solid fa-calendar-days"></i>
+        <span>Calendar</span>
+      </button>
+      <button class="nav-item" id="optionsBtn">
+      <i class="fa-solid fa-circle-chevron-up"></i>
+      <span>More</span>
+      </button>
+    </nav>
+
+    <!-- TASK MODAL -->
+    <div id="todoModal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h2 id="todoModalTitle">Add Task</h2>
+          <button id="closeTodoModal" class="modal-close">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <form id="todoForm" class="modal-body">
+          <input type="hidden" id="todoId" />
+
+          <label class="field-label">
+            Task
+            <input type="text" id="todoTitleInput" class="input" required />
+          </label>
+
+          <div class="modal-footer">
+            <button type="button" id="deleteTodoBtn" class="btn-outline hidden">
+              <i class="fa-solid fa-trash"></i> Delete
+            </button>
+
+            <button type="submit" class="btn-primary">
+              <i class="fa-solid fa-check"></i> Save
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- DELETE POPUP -->
+    <div id="deletePopup" class="popup-overlay hidden">
+      <div class="popup-card">
+        <p class="popup-text">Delete this task?</p>
+        <div class="popup-buttons">
+          <button id="cancelDelete" class="popup-btn cancel-btn">Cancel</button>
+          <button id="confirmDelete" class="popup-btn delete-btn">Delete</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUCCESS POPUP -->
+    <div id="successPopup" class="success-overlay hidden">
+      <div class="success-card">
+        <i class="fa-solid fa-check-circle success-icon"></i>
+        <p id="successMessage" class="success-text">Saved!</p>
+      </div>
+    </div>
+  </div>
+  <div id="optionsSheet" class="options-sheet hidden">
+  <div class="options-handle"></div>
+  <div class="options-close" id="optionsCloseBtn">
+  <i class="fa-solid fa-xmark"></i>
+  </div>
+
+
+  <div class="options-grid">
+  <button onclick="location.href='monthly.html'">
+    <i class="fa-solid fa-calendar" style="color:rgb(25, 250, 40);"></i>
+    Monthly Planner
+  </button>
+
+  <button class="more-active">
+    <i class="fa-solid fa-list-check" style="color:rgb(247, 43, 189);"></i>
+    Monthly To-Do
+  </button>
+
+  <button onclick="location.href='yearly-checklist.html'">
+    <i class="fa-solid fa-bullseye" style="color:rgb(243, 150, 19);"></i>
+    Checklist
+  </button>
+
+  <button onclick="location.href='savings.html'">
+    <i class="fa-solid fa-piggy-bank" style="color:rgb(239, 21, 21);"></i>
+    Savings
+  </button>
+
+  <button onclick="location.href='habits.html'">
+    <i class="fa-solid fa-lightbulb" style="color:rgb(42, 8, 234);"></i>
+    Habits
+  </button>
+
+  <button onclick="location.href='schedule-list.html'">
+    <i class="fa-solid fa-clock" style="color:rgb(251, 247, 45);"></i>
+    Schedule
+  </button>
+</div>
+
+</div>
+
+<div id="optionsBackdrop" class="options-backdrop hidden"></div>
+
+  <script type="module" src="monthly-todo.js"></script>
+</body>
+</html>

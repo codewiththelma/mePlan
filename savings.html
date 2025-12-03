@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mePlan+ – Savings Tracker</title>
+
+  <!-- Nunito -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="logo-dark.png">
+  <link rel="apple-touch-icon" href="logo.png">
+
+
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-root">
+
+    <!-- HEADER -->
+    <header class="top-bar">
+      <div class="brand monthly-brand">
+        <button class="back-button" onclick="window.history.back()">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <span class="brand-name">Savings<span class="brand-plus">+</span></span>
+      </div>
+
+      <button id="themeToggle" class="icon-button">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+    </header>
+
+    <main class="main-content savings-main">
+      <!-- LIST VIEW -->
+      <section id="savingsListView">
+        <section class="savings-summary-card">
+          <p class="savings-summary-label">You saved</p>
+          <p id="totalSavedAmount" class="savings-summary-amount">€0.00</p>
+        </section>
+
+        <section id="savingsListEmpty" class="card savings-empty hidden">
+          <p>No savings goals yet.</p>
+          <p class="text-muted">Tap the + button to add your first one.</p>
+        </section>
+
+        <section id="savingsList" class="savings-list">
+          <!-- goal cards injected here -->
+        </section>
+      </section>
+      <!-- DETAIL VIEW -->
+      <section id="savingsDetailView" class="hidden">
+        <div>
+          <h1 id="detailTitle" class="saving-title">Saving</h1>
+        </div>
+        <section class="card savings-balance-card">
+          <div class="saving-detail-header">
+              <div class="saving-icon-circle" id="detailIconCircle">
+                <i id="detailIcon" class="fa-solid fa-piggy-bank"></i>
+              </div>
+            <div class="saving-detail-amount">
+              <p class="label">Current balance</p>
+              <p id="detailBalance" class="amount">€0.00</p>
+            </div>
+          </div>
+
+          <div class="saving-detail-actions">
+            <button id="depositBtn" class="btn d-btn">Deposit</button>
+            <button id="deductBtn" class="btn d-btn">Deduct</button>
+          </div>
+        </section>
+
+          <section class="card savings-progress-card">
+            <div class="progress-ring-wrap">
+              <h2 class="goal-title">Goal Summary</h2>
+              <div class="progress-ring" id="progressRing">
+                <div class="progress-ring-center">
+                  <i id="progressIcon" class="fa-solid fa-piggy-bank"></i>
+                </div>
+              </div>
+              <p id="progressMain" class="progress-main">0% of goal</p>
+            </div>
+            <div class="">
+            <div class="goal-summary">
+              <p id="detailSubtitle" class="saving-subtitle">Goal: <span>€0.00</span></p>
+              <p id="detailMoneyIn" class="saving-subtitle">Money in: <span>€0.00</span></p>
+              <p id="detailMoneyOut" class="saving-subtitle">Money out: <span>€0.00</span></p>
+            </div>
+              <p id="progressSub" class="progress-sub">€0.00 away from goal</p>
+            </div>
+        </section>
+
+        <section class="card savings-history-card">
+          <div class="history-header">
+            <h2>Transaction history</h2>
+            <button id="viewAllHistoryBtn" class="link-button">View all</button>
+          </div>
+          <div id="recentHistoryList" class="history-list">
+            <!-- last 30 days -->
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <!-- FAB -->
+    <button id="addSavingFab" class="fab-add">
+    <i class="fa-solid fa-plus"></i>
+  </button>
+
+  <button id="editSavingFab" class="fab-add hidden">
+    <i class="fa-solid fa-pen"></i>
+  </button>
+
+
+    <!-- BOTTOM NAV (same pattern as other minis) -->
+    <nav class="bottom-nav">
+      <button class="nav-item" onclick="window.location.href='index.html'">
+        <i class="fa-solid fa-house"></i>
+        <span>Home</span>
+      </button>
+      <button class="nav-item" onclick="window.location.href='calendar.html?from=home'">
+        <i class="fa-solid fa-calendar-days"></i>
+        <span>Calendar</span>
+      </button>
+      <button class="nav-item" id="optionsBtn">
+      <i class="fa-solid fa-circle-chevron-up"></i>
+      <span>More</span>
+      </button>
+    </nav>
+
+    <!-- ADD / EDIT SAVING MODAL -->
+<div id="savingModal" class="modal-overlay hidden">
+  <div class="modal-card saving-modal-card">
+
+    <div class="modal-header">
+      <h2 id="savingModalTitle">Add Saving</h2>
+      <button id="closeSavingModal" class="modal-close">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <form id="savingForm" class="modal-body">
+
+      <input type="hidden" id="savingIdInput" />
+
+      <label class="field-label">
+        Saving name
+        <input type="text" id="savingNameInput" class="input" placeholder="Paris trip" required>
+      </label>
+
+      <label class="field-label">
+        Goal amount
+        <input type="number" id="savingGoalInput" class="input" min="0" step="0.01" placeholder="5000" required>
+      </label>
+
+      <label class="field-label">
+        Currency
+        <select id="savingCurrencyInput" class="input">
+          <option value="€">€ Euro</option>
+          <option value="$">$ USD</option>
+          <option value="£">£ GBP</option>
+          <option value="AED">AED</option>
+        </select>
+      </label>
+
+      <label class="field-label">
+        Icon
+        <div id="iconRow" class="icon-row-modern">
+          <button type="button" class="icon-dot-modern" data-icon="gift"><i class="fa-solid fa-gift"></i></button>
+          <button type="button" class="icon-dot-modern" data-icon="car"><i class="fa-solid fa-car-side"></i></button>
+          <button type="button" class="icon-dot-modern" data-icon="plane"><i class="fa-solid fa-plane-departure"></i></button>
+          <button type="button" class="icon-dot-modern" data-icon="house"><i class="fa-solid fa-house"></i></button>
+          <button type="button" class="icon-dot-modern" data-icon="piggy"><i class="fa-solid fa-piggy-bank"></i></button>
+          <button type="button" class="icon-dot-modern" data-icon="other"><i class="fa-solid fa-wallet"></i></button>
+        </div>
+        <input type="hidden" id="savingIconInput" required>
+      </label>
+
+      <div class="modal-footer saving-footer">
+        <button type="button" id="deleteSavingBtn" class="btn danger-btn hidden btn-primary">Delete</button>
+        <button type="submit" class="btn btn-primary">Save</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+
+    <!-- TRANSACTION MODAL (deposit / deduct) -->
+    <div id="transactionModal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h2 id="transactionModalTitle">Deposit</h2>
+          <button id="closeTransactionModal" class="modal-close">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <form id="transactionForm" class="modal-body">
+          <label class="field-label">
+            Amount
+            <input type="number" id="transactionAmountInput" class="input" min="0" step="0.01" required />
+          </label>
+
+          <label class="field-label">
+            Description
+            <input type="text" id="transactionDescInput" class="input" placeholder="Optional" />
+          </label>
+
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">
+              Save
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- FULL HISTORY MODAL -->
+    <div id="historyModal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h2>All transactions</h2>
+          <button id="closeHistoryModal" class="modal-close">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <div class="modal-body history-modal-body">
+          <div id="fullHistoryList" class="history-list">
+            <!-- all transactions -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUCCESS POPUP -->
+    <div id="successPopup" class="success-overlay hidden">
+      <div class="success-card">
+        <i class="fa-solid fa-check-circle success-icon"></i>
+        <p id="successMessage" class="success-text">Saved!</p>
+      </div>
+    </div>
+  </div>
+  <div id="errorPopup" class="success-overlay hidden">
+    <div class="success-card">
+      <div class="success-icon" style="color:#ef4444;"><i class="fa-solid fa-xmark-circle"></i></div>
+      <div id="errorMessage" class="success-text"></div>
+    </div>
+  </div>
+  <div id="deletePopup" class="popup-overlay hidden">
+      <div class="popup-card">
+        <p class="popup-text">Delete saving?</p>
+        <div class="popup-buttons">
+          <button id="cancelDelete" class="popup-btn cancel-btn">Cancel</button>
+          <button id="confirmDelete" class="popup-btn delete-btn">Delete</button>
+        </div>
+      </div>
+    </div>
+
+
+  <div id="optionsSheet" class="options-sheet hidden">
+  <div class="options-handle"></div>
+  <div class="options-close" id="optionsCloseBtn">
+  <i class="fa-solid fa-xmark"></i>
+  </div>
+
+
+  <div class="options-grid">
+  <button onclick="location.href='monthly.html'">
+    <i class="fa-solid fa-calendar" style="color:rgb(25, 250, 40);"></i>
+    Monthly Planner
+  </button>
+
+  <button onclick="location.href='monthly-todo.html'">
+    <i class="fa-solid fa-list-check" style="color:rgb(247, 43, 189);"></i>
+    Monthly To-Do
+  </button>
+
+  <button onclick="location.href='yearly-checklist.html'">
+    <i class="fa-solid fa-bullseye" style="color:rgb(243, 150, 19);"></i>
+    Checklist
+  </button>
+
+  <button class="more-active">
+    <i class="fa-solid fa-piggy-bank" style="color:rgb(239, 21, 21);"></i>
+    Savings
+  </button>
+
+  <button onclick="location.href='habits.html'">
+    <i class="fa-solid fa-lightbulb" style="color:rgb(42, 8, 234);"></i>
+    Habits
+  </button>
+
+  <button onclick="location.href='schedule-list.html'">
+    <i class="fa-solid fa-clock" style="color:rgb(251, 247, 45);"></i>
+    Schedule
+  </button>
+</div>
+
+</div>
+
+<div id="optionsBackdrop" class="options-backdrop hidden"></div>
+  <script type="module" src="savings.js"></script>
+</body>
+</html>

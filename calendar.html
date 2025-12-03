@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mePlan+ – Calendar</title>
+
+  <!-- Nunito -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="logo-dark.png">
+  <link rel="apple-touch-icon" href="logo.png">
+
+
+
+  <!-- Font Awesome -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-root">
+    <!-- HEADER -->
+    <header class="top-bar">
+      <div class="brand">
+        <button class="back-button" onclick="window.history.back();">
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <span class="brand-name">Calendar<span class="brand-plus">+</span></span>
+      </div>
+
+      <button id="themeToggle" class="icon-button" aria-label="Toggle theme">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+    </header>
+
+          <section class="year-controls-fixed">
+        <div class="year-nav">
+          <button id="prevYear" class="year-arrow">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+
+          <div class="year-title-wrap">
+            <h1 id="yearTitle" class="year-title">2025</h1>
+            <p class="year-subtitle">Tap a day to view events</p>
+          </div>
+
+          <button id="nextYear" class="year-arrow">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
+      </section>
+    <!-- MAIN -->
+    <main class="main-content calendar-main">
+      <!-- YEAR CONTROLS -->
+
+      <!-- YEAR CALENDAR -->
+      <section id="yearMonths" class="year-months">
+        <!-- Filled by JS -->
+      </section>
+    </main>
+
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav">
+      <button class="nav-item" onclick="window.location.href='index.html'">
+        <i class="fa-solid fa-house"></i>
+        <span>Home</span>
+      </button>
+      <button class="nav-item nav-active">
+        <i class="fa-solid fa-calendar-days"></i>
+        <span>Calendar</span>
+      </button>
+      <button class="nav-item" id="optionsBtn">
+      <i class="fa-solid fa-circle-chevron-up"></i>
+      <span>More</span>
+      </button>
+    </nav>
+
+    <!-- DAY POPOVER -->
+    <div id="dayPopover" class="day-popover hidden">
+      <div class="day-popover-card">
+        <div id="popoverDateLabel" class="day-popover-date">Mon 1 Jan 2025</div>
+        <ul id="popoverEvents" class="day-popover-list">
+          <!-- Filled by JS -->
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div id="optionsSheet" class="options-sheet hidden">
+  <div class="options-handle"></div>
+  <div class="options-close" id="optionsCloseBtn">
+  <i class="fa-solid fa-xmark"></i>
+  </div>
+
+
+  <div class="options-grid">
+  <button onclick="location.href='monthly.html'">
+    <i class="fa-solid fa-calendar" style="color:rgb(25, 250, 40);"></i>
+    Monthly Planner
+  </button>
+
+  <button onclick="location.href='monthly-todo.html'">
+    <i class="fa-solid fa-list-check" style="color:rgb(247, 43, 189);"></i>
+    Monthly To-Do
+  </button>
+
+  <button onclick="location.href='yearly-checklist.html'">
+    <i class="fa-solid fa-bullseye" style="color:rgb(243, 150, 19);"></i>
+    Checklist
+  </button>
+
+  <button onclick="location.href='savings.html'">
+    <i class="fa-solid fa-piggy-bank" style="color:rgb(239, 21, 21);"></i>
+    Savings
+  </button>
+
+  <button onclick="location.href='habits.html'">
+    <i class="fa-solid fa-lightbulb" style="color:rgb(42, 8, 234);"></i>
+    Habits
+  </button>
+
+  <button onclick="location.href='schedule-list.html'">
+    <i class="fa-solid fa-clock" style="color:rgb(251, 247, 45);"></i>
+    Schedule
+  </button>
+</div>
+
+</div>
+
+<div id="optionsBackdrop" class="options-backdrop hidden"></div>
+
+  <script type="module" src="calendar.js"></script>
+</body>
+</html>

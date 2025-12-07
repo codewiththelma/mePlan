@@ -679,7 +679,7 @@ body {
   border-radius: 10px;
   border: 1px solid rgba(148, 163, 184, 0.7);
   padding: 0.4rem 0.55rem;
-  font-size: 16px;
+  font-size: 0.85rem;
   background: var(--card-bg);
   color: var(--text-main);
 }
@@ -2955,4 +2955,7 @@ input[type="number"] {
   margin: 0;
   padding: 0;
   margin-bottom: 6px;
+}
+ input{
+  font-size: 16px;
 }

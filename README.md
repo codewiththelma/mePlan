@@ -1,5 +1,4 @@
-# 🌸 **mePlan+**
-### _Your personal planner, habit tracker, and productivity app — built for mobile._
+# **mePlan+**
 
 mePlan+ is a soft, modern, **mobile-first** productivity app that helps you track your **habits**, **monthly plans**, **checklists**, **savings**, and **daily schedule** — all in one calm, pastel interface.
 
@@ -47,8 +46,6 @@ mePlan+ is a PWA — meaning you can install it like a real app.
 ### 🔥 **Habit Tracker**
 - Daily check-in  
 - Smart streak system  
-- Scrollable date strip  
-- Pastel + dark mode support  
 
 ### 🗓 **Monthly Planner**
 - Add/edit events  
@@ -58,12 +55,10 @@ mePlan+ is a PWA — meaning you can install it like a real app.
 ### 📝 **Monthly To-Do List**
 - Monthly bucket list  
 - Quick add/delete  
-- Minimal, clean UI  
 
 ### 🎯 **Yearly Checklist**
 - Categorized yearly goals  
 - Progress tracking  
-- Pastel section headers  
 
 ### 💰 **Savings Tracker**
 - Create savings goals  
@@ -82,7 +77,6 @@ mePlan+ is a PWA — meaning you can install it like a real app.
 - Edit username  
 - Delete account  
 - Dark/light theme toggle  
-
 ---
 
 ## 🛠 **Tech Used**
@@ -95,16 +89,9 @@ mePlan+ is a PWA — meaning you can install it like a real app.
 ---
 
 ## 📌 **Notes**
-- Designed for **mobile + iPad**  
-- Works offline after installation  
+- Designed for **mobile + iPad**   
 - Syncs securely via Firebase  
 - No backend server required  
-
----
-
-## 💡 **About mePlan+**
-A calming productivity system built to help you stay organized without stress — simple layout, pastel colors, minimal clutter, and everything in one place.
-
 ---
 
 ## 👩‍💻 **Developer**

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up — MePlan+</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+
+<body class="auth-body">
+
+  <div class="auth-container">
+    <img src="logo.png" class="auth-logo" />
+
+    <h1 class="auth-title">Create Account</h1>
+    <p class="auth-sub">Start your MePlan+ journey</p>
+
+    <form id="signupForm" class="auth-form">
+  <input id="signupUsername" type="text" placeholder="Username" required />
+  <input id="signupEmail" type="email" placeholder="Email" required />
+  <input id="signupPassword" type="password" placeholder="Password" required />
+  <input id="signupPassword2" type="password" placeholder="Confirm Password" required />
+
+  <button class="auth-btn" type="submit">
+    Create Account
+  </button>
+</form>
+
+
+    <p class="auth-switch">
+      Already have an account?
+      <a href="login.html">Log in</a>
+    </p>
+
+    <p id="authError" class="auth-error hidden"></p>
+  </div>
+<div id="errorPopup" class="success-overlay hidden">
+    <div class="success-card">
+      <div class="success-icon" style="color:#ef4444;"><i class="fa-solid fa-xmark-circle"></i></div>
+      <div id="errorMessage" class="success-text"></div>
+    </div>
+  </div>
+  <script type="module" src="auth-signup.js"></script>
+</body>
+</html>

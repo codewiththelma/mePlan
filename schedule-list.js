@@ -13,7 +13,8 @@ import {
   doc,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+import { signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 const firebaseConfig = {
   apiKey: "AIzaSyAfuSGsTNTCeJETOHuum5p8f5MWpDib-Ok",
   authDomain: "myplanner-d7f1a.firebaseapp.com",
@@ -26,6 +27,9 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+const auth = getAuth();
+
 
 // DOM
 const themeToggle = document.getElementById("themeToggle");
@@ -117,7 +121,7 @@ colorDots.forEach(dot => {
 
 // LOAD
 async function loadSchedules() {
-  const snap = await getDocs(collection(db, "schedules"));
+  const snap = await getDocs(collection(db, "users", auth.currentUser.uid, "schedules"));
   schedules = snap.docs.map(d => ({ id: d.id, ...d.data() }));
   renderScheduleList();
 }
@@ -237,12 +241,12 @@ function openEditScheduleModal(sch) {
   scheduleTitleInput.focus();
 }
 async function deleteAllScheduleEvents(scheduleId, db) {
-  const evRef = collection(db, "scheduleEvents");
+  const evRef = collection(db, "users", auth.currentUser.uid, "scheduleEvents");
   const q = query(evRef, where("scheduleId", "==", scheduleId));
   const snap = await getDocs(q);
 
   const deletes = snap.docs.map(docSnap =>
-    deleteDoc(doc(db, "scheduleEvents", docSnap.id))
+    deleteDoc(doc(db, "users", auth.currentUser.uid, "scheduleEvents", docSnap.id))
   );
 
   await Promise.all(deletes);
@@ -270,10 +274,10 @@ scheduleForm.addEventListener("submit", async (e) => {
   if (!title || !color) return;
 
   if (id) {
-    await updateDoc(doc(db, "schedules", id), { title, description, color });
+    await updateDoc(doc(db, "users", auth.currentUser.uid, "schedules", id), { title, description, color });
     showSuccess("Schedule updated!");
   } else {
-    await addDoc(collection(db, "schedules"), {
+    await addDoc(collection(db, "users", auth.currentUser.uid, "schedules"), {
       title,
       description,
       color,
@@ -309,7 +313,7 @@ confirmDelete.addEventListener("click", async () => {
     await deleteAllScheduleEvents(pendingDeleteId, db);
 
     // delete the schedule itself
-    await deleteDoc(doc(db, "schedules", pendingDeleteId));
+    await deleteDoc(doc(db, "users", auth.currentUser.uid, "schedules", pendingDeleteId));
 
     showSuccess("Schedule deleted!");
 
@@ -354,7 +358,11 @@ addScheduleFab.addEventListener("click", () => {
 });
 
 // INIT
-document.addEventListener("DOMContentLoaded", async () => {
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
   initTheme();
   initOptionsSheet();
   await loadSchedules();

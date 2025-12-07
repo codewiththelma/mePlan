@@ -1,12 +1,11 @@
 // calendar.js — Year view with dots + day popover
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
 import {
   getFirestore,
   collection,
   getDocs
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 // --- Firebase ---
 const firebaseConfig = {
   apiKey: "AIzaSyAfuSGsTNTCeJETOHuum5p8f5MWpDib-Ok",
@@ -20,7 +19,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
+const auth = getAuth();
 // --- DOM ---
 const themeToggle = document.getElementById("themeToggle");
 
@@ -67,7 +66,7 @@ function initTheme() {
 // DATA LOADING
 // ============================
 async function loadEvents() {
-  const snapshot = await getDocs(collection(db, "monthlyEvents"));
+  const snapshot = await getDocs(collection(db, "users", auth.currentUser.uid, "monthlyEvents"));
   const allEvents = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
 
   const map = {};
@@ -298,10 +297,15 @@ window.addEventListener("scroll", () => {
   }
 });
 
-// ============================
-// INIT
-// ============================
-document.addEventListener("DOMContentLoaded", async () => {
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  // --- Everything below is EXACTLY the same as your original ---
+  
   initTheme();
   initCurrentYear();
 

@@ -16,7 +16,8 @@ import {
   orderBy,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+import { signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 // ---- Firebase config (same project) ----
 const firebaseConfig = {
   apiKey: "AIzaSyAfuSGsTNTCeJETOHuum5p8f5MWpDib-Ok",
@@ -30,6 +31,9 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+const auth = getAuth();
+
 
 // ---- DOM ----
 const themeToggle = document.getElementById("themeToggle");
@@ -200,7 +204,7 @@ function isDetailMode() {
 //   LOAD & RENDER LIST
 // =========================
 async function loadSavingsGoals() {
-  const snap = await getDocs(collection(db, "savingsGoals"));
+  const snap = await getDocs(collection(db, "users", auth.currentUser.uid, "users", auth.currentUser.uid, "savingsGoals"));
   savingsGoals = snap.docs.map(d => ({ id: d.id, ...d.data() }));
   renderSavingsList();
   updateTotalSaved();
@@ -399,7 +403,7 @@ function renderDetailHeader(goal) {
 // =========================
 async function loadTransactionsForCurrent() {
   if (!currentSavingId) return;
-  const txRef = collection(db, "savingsTransactions");
+  const txRef = collection(db, "users", auth.currentUser.uid, "savingsTransactions");
   const q = query(txRef, where("savingId", "==", currentSavingId));
   const snap = await getDocs(q);
 
@@ -579,7 +583,7 @@ savingForm?.addEventListener("submit", async (e) => {
 
   try {
     if (id) {
-      await updateDoc(doc(db, "savingsGoals", id), {
+      await updateDoc(doc(db,"users", auth.currentUser.uid, "savingsGoals", id), {
         title,
         goalAmount: goalAmt,
         currency,
@@ -587,7 +591,7 @@ savingForm?.addEventListener("submit", async (e) => {
       });
       showSuccess("Saving updated");
     } else {
-      await addDoc(collection(db, "savingsGoals"), {
+      await addDoc(collection(db, "users", auth.currentUser.uid, "savingsGoals"), {
         title,
         goalAmount: goalAmt,
         currency,
@@ -629,17 +633,17 @@ document.getElementById("confirmDelete")?.addEventListener("click", async () => 
 
   try {
     // Delete all related transactions
-    const txRef = collection(db, "savingsTransactions");
+    const txRef = collection(db, "users", auth.currentUser.uid, "savingsTransactions");
     const q = query(txRef, where("savingId", "==", id));
     const snap = await getDocs(q);
 
     const deletes = snap.docs.map(d => 
-      deleteDoc(doc(db, "savingsTransactions", d.id))
+      deleteDoc(doc(db, "users", auth.currentUser.uid, "savingsTransactions", d.id))
     );
     await Promise.all(deletes);
 
     // Delete the saving itself
-    await deleteDoc(doc(db, "savingsGoals", id));
+    await deleteDoc(doc(db, "users", auth.currentUser.uid, "savingsGoals", id));
 
     // Remove from local list
     savingsGoals = savingsGoals.filter(g => g.id !== id);
@@ -726,7 +730,7 @@ transactionForm?.addEventListener("submit", async (e) => {
   const delta = type === "deposit" ? amount : -amount;
 
   try {
-    await addDoc(collection(db, "savingsTransactions"), {
+    await addDoc(collection(db, "users", auth.currentUser.uid, "savingsTransactions"), {
       savingId: currentSavingId,
       type,
       amount,
@@ -791,7 +795,11 @@ viewAllHistoryBtn?.addEventListener("click", openHistoryModal);
 // =========================
 //          INIT
 // =========================
-document.addEventListener("DOMContentLoaded", async () => {
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
   initTheme();
   initOptionsSheet();
   await loadSavingsGoals();

@@ -16,7 +16,8 @@ import {
   where,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+import { signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 // ---------------------------
 // FIREBASE
 // ---------------------------
@@ -32,6 +33,9 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+const auth = getAuth();
+
 
 // ---------------------------
 // DOM ELEMENTS
@@ -171,7 +175,7 @@ function validateTimeRangeAndStep(start, end) {
 // FIRESTORE
 // ---------------------------
 async function loadScheduleMeta() {
-  const ref = doc(db, "schedules", scheduleId);
+  const ref = doc(db, "users", auth.currentUser.uid, "schedules", scheduleId);
   const snap = await getDoc(ref);
   if (!snap.exists()) return;
 
@@ -183,7 +187,7 @@ async function loadScheduleMeta() {
 
 async function loadEvents() {
   const q = query(
-    collection(db, "scheduleEvents"),
+    collection(db, "users", auth.currentUser.uid, "scheduleEvents"),
     where("scheduleId", "==", scheduleId)
   );
 
@@ -375,10 +379,10 @@ const end = `${document.getElementById("endHourLabel").textContent}:${document.g
 
   try {
     if (id) {
-      await updateDoc(doc(db, "scheduleEvents", id), data);
+      await updateDoc(doc(db, "users", auth.currentUser.uid, "scheduleEvents", id), data);
       showSuccess("Slot updated!");
     } else {
-      await addDoc(collection(db, "scheduleEvents"), data);
+      await addDoc(collection(db, "users", auth.currentUser.uid, "scheduleEvents"), data);
       showSuccess("Slot added!");
     }
     await loadEvents();
@@ -406,7 +410,7 @@ confirmDelete.addEventListener("click", async () => {
   if (!pendingDeleteId) return;
 
   try {
-    await deleteDoc(doc(db, "scheduleEvents", pendingDeleteId));
+    await deleteDoc(doc(db, "users", auth.currentUser.uid, "scheduleEvents", pendingDeleteId));
     showSuccess("Slot deleted!");
     pendingDeleteId = null;
     deletePopup.classList.add("hidden");
@@ -541,7 +545,11 @@ function initOptionsSheet() {
 // ---------------------------
 // INIT
 // ---------------------------
-document.addEventListener("DOMContentLoaded", async () => {
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
   initTheme();
   initTimePickers();
   initOptionsSheet();

@@ -12,7 +12,8 @@ import {
   doc,
   updateDoc
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+import { signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 
 // Your Firebase config
 const firebaseConfig = {
@@ -29,6 +30,14 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const db = getFirestore(app);
+
+const auth = getAuth();
+
+document.getElementById("logoutBtn")?.addEventListener("click", () => {
+  signOut(auth).then(() => {
+    window.location.href = "login.html";
+  });
+});
 
 // DOM
 const todayLabelEl = document.getElementById("todayLabel");
@@ -102,7 +111,7 @@ async function fetchTodayEvents() {
   const isoDate = today.toISOString().slice(0, 10); // YYYY-MM-DD
 
   try {
-    const ref = collection(db, "monthlyEvents");
+    const ref = collection(db, "users", auth.currentUser.uid, "monthlyEvents");
     const q = query(ref, where("date", "==", isoDate));
     const snapshot = await getDocs(q);
 
@@ -223,7 +232,7 @@ function loadVerse() {
 }
 
 async function fetchHabitsToday() {
-  const habitsCol = collection(db, "habits");
+  const habitsCol = collection(db, "users", auth.currentUser.uid, "habits");
   const snapshot = await getDocs(habitsCol);
 
   return snapshot.docs.map(doc => ({
@@ -238,7 +247,7 @@ async function homeToggleHabit(habit) {
   const today = new Date().toISOString().slice(0, 10);
   const yesterday = formatDateKey(new Date(Date.now() - 86400000));
 
-  const habitRef = doc(db, "habits", habit.id);
+  const habitRef = doc(db, "users", auth.currentUser.uid, "habits", habit.id);
   const dates = habit.completedDates || [];
   const alreadyDone = dates.includes(today);
 
@@ -396,9 +405,13 @@ function initOptionsSheet() {
 
 
 // ---------- INIT ----------
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
 
-document.addEventListener("DOMContentLoaded", async () => {
-  initTheme();
+ initTheme();
   renderTodayHeader();
   initMiniCardNavigation();
   initBottomNav();
@@ -409,5 +422,4 @@ document.addEventListener("DOMContentLoaded", async () => {
   renderEvents(events);
   loadVerse(); // don’t await so UI shows faster
   await loadHomeHabits();
-
 });

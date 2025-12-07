@@ -35,9 +35,14 @@
         <span class="brand-name">Calendar<span class="brand-plus">+</span></span>
       </div>
 
+      <div class="top-bar-side">
       <button id="themeToggle" class="icon-button" aria-label="Toggle theme">
         <i class="fa-solid fa-moon"></i>
       </button>
+      <button id="profileBtn" class="icon-button" onclick="window.location='profile.html'">
+      <i class="fa-solid fa-user"></i>
+    </button>
+    </div>
     </header>
 
           <section class="year-controls-fixed">
@@ -135,6 +140,43 @@
 </div>
 
 <div id="optionsBackdrop" class="options-backdrop hidden"></div>
+<div id="profileModal" class="modal-overlay hidden">
+  <div class="modal-card profile-card">
+    
+    <div class="modal-header">
+      <h2>My Profile</h2>
+      <button id="closeProfile" class="modal-close">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="modal-body profile-body">
+
+      <label class="field-label">
+        Name
+        <input id="profileName" class="input" type="text" />
+      </label>
+
+      <label class="field-label">
+        Email
+        <input id="profileEmail" class="input" type="email" disabled />
+      </label>
+
+      <label class="field-label">
+        Password
+        <input id="profilePassword" class="input" type="password" value="********" disabled />
+        <button id="changePasswordBtn" class="link-button">Change Password</button>
+      </label>
+
+    </div>
+
+    <div class="modal-footer profile-footer">
+      <button id="logoutBtn" class="btn-outline">Logout</button>
+      <button id="deleteAccountBtn" class="btn-primary" style="background:#ef4444;">Delete Account</button>
+    </div>
+
+  </div>
+</div>
 
   <script type="module" src="calendar.js"></script>
 </body>

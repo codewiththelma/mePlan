@@ -16,7 +16,8 @@ import {
   query,
   where
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+import { signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 const firebaseConfig = {
   apiKey: "AIzaSyAfuSGsTNTCeJETOHuum5p8f5MWpDib-Ok",
   authDomain: "myplanner-d7f1a.firebaseapp.com",
@@ -29,6 +30,9 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+const auth = getAuth();
+
 
 // ---- DOM ----
 const themeToggle = document.getElementById("themeToggle");
@@ -132,7 +136,7 @@ function updateMonthTitle() {
 // ===========================
 async function loadTodosForCurrentMonth() {
   const monthKey = getMonthKey(currentYear, currentMonthIndex);
-  const q = query(collection(db, "monthlyTodos"), where("monthKey", "==", monthKey));
+  const q = query(collection(db, "users", auth.currentUser.uid, "monthlyTodos"), where("monthKey", "==", monthKey));
   const snap = await getDocs(q);
 
   currentMonthTodos = snap.docs.map(d => ({
@@ -216,7 +220,7 @@ function renderTodoList() {
       // Toggle complete
       checkboxWrap.addEventListener("click", async () => {
         const newCompleted = !todo.completed;
-        await updateDoc(doc(db, "monthlyTodos", todo.id), { completed: newCompleted });
+        await updateDoc(doc(db, "users", auth.currentUser.uid, "monthlyTodos", todo.id), { completed: newCompleted });
         todo.completed = newCompleted;
         showSuccess("Task updated");
         await loadTodosForCurrentMonth();
@@ -290,10 +294,10 @@ todoForm.addEventListener("submit", async (e) => {
   const monthKey = getMonthKey(currentYear, currentMonthIndex);
 
   if (id) {
-    await updateDoc(doc(db, "monthlyTodos", id), { title });
+    await updateDoc(doc(db, "users", auth.currentUser.uid, "monthlyTodos", id), { title });
     showSuccess("Task updated!");
   } else {
-    await addDoc(collection(db, "monthlyTodos"), {
+    await addDoc(collection(db, "users", auth.currentUser.uid, "monthlyTodos"), {
       title,
       monthKey,
       completed: false,
@@ -325,7 +329,7 @@ cancelDelete.addEventListener("click", () => {
 confirmDelete.addEventListener("click", async () => {
   if (!pendingDeleteId) return;
 
-  await deleteDoc(doc(db, "monthlyTodos", pendingDeleteId));
+  await deleteDoc(doc(db, "users", auth.currentUser.uid, "monthlyTodos", pendingDeleteId));
   pendingDeleteId = null;
 
   await loadTodosForCurrentMonth();
@@ -369,7 +373,11 @@ function initOptionsSheet() {
 // ===========================
 //   INIT
 // ===========================
-document.addEventListener("DOMContentLoaded", async () => {
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
   initTheme();
   initCurrentMonth();
   updateMonthTitle();

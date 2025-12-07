@@ -15,7 +15,8 @@ import {
   query,
   where
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+import { signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 const firebaseConfig = {
   apiKey: "AIzaSyAfuSGsTNTCeJETOHuum5p8f5MWpDib-Ok",
   authDomain: "myplanner-d7f1a.firebaseapp.com",
@@ -28,6 +29,8 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+const auth = getAuth();
 
 // ---- DOM ----
 const themeToggle = document.getElementById("themeToggle");
@@ -122,7 +125,7 @@ function updateYearTitle() {
 //   LOAD ITEMS FOR YEAR
 // ===========================
 async function loadYearlyItems() {
-  const q = query(collection(db, "yearlyChecklist"), where("year", "==", currentYear));
+  const q = query(collection(db, "users", auth.currentUser.uid, "yearlyChecklist"), where("year", "==", currentYear));
   const snap = await getDocs(q);
 
   yearlyItems = snap.docs.map(d => ({
@@ -254,7 +257,7 @@ function renderYearlyChecklist() {
       // Toggle completed
       checkboxBtn.addEventListener("click", async () => {
         const newCompleted = !item.completed;
-        await updateDoc(doc(db, "yearlyChecklist", item.id), { completed: newCompleted });
+        await updateDoc(doc(db, "users", auth.currentUser.uid, "yearlyChecklist", item.id), { completed: newCompleted });
         item.completed = newCompleted;
         showSuccess("Item updated");
         await loadYearlyItems();
@@ -372,10 +375,10 @@ yearlyForm.addEventListener("submit", async (e) => {
   if (!title || !color) return;
 
   if (id) {
-    await updateDoc(doc(db, "yearlyChecklist", id), { title, category, color });
+    await updateDoc(doc(db, "users", auth.currentUser.uid, "yearlyChecklist", id), { title, category, color });
     showSuccess("Item updated!");
   } else {
-    await addDoc(collection(db, "yearlyChecklist"), {
+    await addDoc(collection(db, "users", auth.currentUser.uid, "yearlyChecklist"), {
       title,
       category,
       color,
@@ -409,7 +412,7 @@ cancelDelete.addEventListener("click", () => {
 confirmDelete.addEventListener("click", async () => {
   if (!pendingDeleteId) return;
 
-  await deleteDoc(doc(db, "yearlyChecklist", pendingDeleteId));
+  await deleteDoc(doc(db, "users", auth.currentUser.uid, "yearlyChecklist", pendingDeleteId));
   pendingDeleteId = null;
 
   await loadYearlyItems();
@@ -451,7 +454,11 @@ function initOptionsSheet() {
 // ===========================
 //   INIT
 // ===========================
-document.addEventListener("DOMContentLoaded", async () => {
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
   initTheme();
   initCurrentYear();
   updateYearTitle();

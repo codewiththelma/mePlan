@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mePlan+ – Profile</title>
+
+  <!-- Google Font: Nunito -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="logo-dark.png">
+  <link rel="apple-touch-icon" href="logo-dark.png">
+
+
+  <!-- Font Awesome (Free) -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  
+  <!-- TOP BAR -->
+  <header class="top-bar">
+      <div class="brand monthly-brand">
+        <button class="back-button" onclick="window.history.back();">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <span class="brand-name">Profile<span class="brand-plus">+</span></span>
+      </div>
+
+     <div class="top-bar-side">
+      <button id="themeToggle" class="icon-button" aria-label="Toggle theme">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+      <button id="profileBtn" class="icon-button active">
+      <i class="fa-solid fa-user"></i>
+    </button>
+    </div>
+    </header>
+
+  <main class="main-content">
+
+    <div class="card" style="padding-bottom:2rem;">
+      <h2 style="margin-top:0; font-size:1.2rem; font-weight:800;">My Profile</h2>
+
+      <label class="profile-label">
+        Username
+        <input id="profileName" class="input" type="text" placeholder="Your username">
+        </label>
+
+
+      <label class="profile-label">
+        Email
+        <input id="profileEmail" class="input" type="email" disabled>
+      </label>
+
+      <label class="profile-label">
+        Password
+        <input class="input" type="password" value="********" disabled>
+        </label>
+
+        <button id="changePasswordBtn" class="link-button" style="margin-top:-8px;">
+        Change Password
+        </button>
+
+        <label class="profile-label">
+        Created On
+        <input id="profileCreated" class="input" type="text" disabled>
+        </label>
+
+
+      <div class="modal-footer">
+        <button id="logoutBtn" type="submit" class="btn-primary">
+            <i class="fa-solid fa-arrow-rotate-left"></i> Logout
+        </button>
+        <button id="deleteAccountBtn" type="button" id="deleteEventBtn" class="btn-outline">
+            <i class="fa-solid fa-trash"></i> Delete Account
+        </button>
+        </div>
+    </div>
+
+  </main>
+  <!-- CHANGE PASSWORD MODAL -->
+<div id="passwordModal" class="modal-overlay hidden">
+  <div class="modal-card">
+
+    <div class="modal-header">
+      <h2>Change Password</h2>
+      <button class="modal-close" id="closePasswordModal">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <label class="field-label">
+          Current Password
+          <input id="currentPasswordInput" class="input" type="password" placeholder="Enter current password">
+        </label>
+
+        <label class="field-label">
+          New Password
+          <input id="newPasswordInput" class="input" type="password" placeholder="Enter new password">
+        </label>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-outline" id="cancelPasswordBtn">Cancel</button>
+      <button class="btn-primary" id="savePasswordBtn">Save</button>
+    </div>
+
+  </div>
+</div>
+<div id="errorPopup" class="success-overlay hidden">
+    <div class="success-card">
+      <div class="success-icon" style="color:#ef4444;"><i class="fa-solid fa-xmark-circle"></i></div>
+      <div id="errorMessage" class="success-text"></div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV (MyTrackr-style) -->
+    <nav class="bottom-nav">
+      <button class="nav-item" onclick="window.location.href='index.html'">
+        <i class="fa-solid fa-house"></i>
+        <span>Home</span>
+      </button>
+      <button class="nav-item" onclick="window.location.href='calendar.html'">
+        <i class="fa-solid fa-calendar-days"></i>
+        <span>Calendar</span>
+      </button>
+      <button class="nav-item" id="optionsBtn">
+      <i class="fa-solid fa-circle-chevron-up"></i>
+      <span>More</span>
+      </button>
+    </nav>
+
+  </div>
+  <div id="optionsSheet" class="options-sheet hidden">
+  <div class="options-handle"></div>
+  <div class="options-close" id="optionsCloseBtn">
+  <i class="fa-solid fa-xmark"></i>
+  </div>
+
+
+  <div class="options-grid">
+  <button onclick="location.href='monthly.html'">
+    <i class="fa-solid fa-calendar" style="color:rgb(25, 250, 40);"></i>
+    Monthly Planner
+  </button>
+
+  <button onclick="location.href='monthly-todo.html'">
+    <i class="fa-solid fa-list-check" style="color:rgb(247, 43, 189);"></i>
+    Monthly To-Do
+  </button>
+
+  <button onclick="location.href='yearly-checklist.html'">
+    <i class="fa-solid fa-bullseye" style="color:rgb(243, 150, 19);"></i>
+    Checklist
+  </button>
+
+  <button onclick="location.href='savings.html'">
+    <i class="fa-solid fa-piggy-bank" style="color:rgb(239, 21, 21);"></i>
+    Savings
+  </button>
+
+  <button onclick="location.href='habits.html'">
+    <i class="fa-solid fa-lightbulb" style="color:rgb(42, 8, 234);"></i>
+    Habits
+  </button>
+
+  <button onclick="location.href='schedule-list.html'">
+    <i class="fa-solid fa-clock" style="color:rgb(251, 247, 45);"></i>
+    Schedule
+  </button>
+</div>
+
+</div>
+
+<div id="optionsBackdrop" class="options-backdrop hidden"></div>
+  <script type="module" src="profile.js"></script>
+
+</body>
+</html>

@@ -6,7 +6,8 @@ import {
   getFirestore, collection, addDoc, updateDoc, deleteDoc,
   getDocs, doc, serverTimestamp, deleteField
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+import { signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 // FIREBASE CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyAfuSGsTNTCeJETOHuum5p8f5MWpDib-Ok",
@@ -20,6 +21,8 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+const auth = getAuth();
 
 // ===============================
 //  DOM ELEMENTS
@@ -166,7 +169,7 @@ async function migrateHabit(habit) {
     completedDates = [habit.lastCompletedDate];
   }
 
-  await updateDoc(doc(db, "habits", habit.id), {
+  await updateDoc(doc(db, "users", auth.currentUser.uid, "habits", habit.id), {
     completedDates,
     lastCompletedDate: deleteField()
   });
@@ -197,7 +200,7 @@ function autoResetStreak(habit) {
 //  LOAD HABITS
 // ===============================
 async function loadHabits() {
-  const snap = await getDocs(collection(db, "habits"));
+  const snap = await getDocs(collection(db, "users", auth.currentUser.uid, "habits"));
 
   habits = [];
 
@@ -210,7 +213,7 @@ async function loadHabits() {
     // Reset streak if needed
     const newStreak = autoResetStreak(h);
     if (newStreak !== h.streak) {
-      await updateDoc(doc(db, "habits", h.id), { streak: newStreak });
+      await updateDoc(doc(db, "users", auth.currentUser.uid, "habits", h.id), { streak: newStreak });
       h.streak = newStreak;
     }
 
@@ -241,7 +244,7 @@ async function markHabitToday(habit) {
     const newDates = dates.filter(d => d !== today);
     const newStreak = Math.max(0, (habit.streak || 0) - 1);
 
-    await updateDoc(doc(db, "habits", habit.id), {
+    await updateDoc(doc(db, "users", auth.currentUser.uid, "habits", habit.id), {
       completedDates: newDates,
       streak: newStreak
     });
@@ -259,7 +262,7 @@ async function markHabitToday(habit) {
     newStreak = (habit.streak || 0) + 1;
   }
 
-  await updateDoc(doc(db, "habits", habit.id), {
+  await updateDoc(doc(db, "users", auth.currentUser.uid, "habits", habit.id), {
     completedDates: newDates,
     streak: newStreak
   });
@@ -448,10 +451,10 @@ habitForm.addEventListener("submit", async e => {
   if (!title || !color) return;
 
   if (id) {
-    await updateDoc(doc(db, "habits", id), { title, color });
+    await updateDoc(doc(db, "users", auth.currentUser.uid, "habits", id), { title, color });
     showSuccess("Habit updated!");
   } else {
-    await addDoc(collection(db, "habits"), {
+    await addDoc(collection(db, "users", auth.currentUser.uid, "habits"), {
       title,
       color,
       streak: 0,
@@ -484,7 +487,7 @@ cancelDelete.addEventListener("click", () => {
 });
 
 confirmDelete.addEventListener("click", async () => {
-  await deleteDoc(doc(db, "habits", pendingDeleteId));
+  await deleteDoc(doc(db, "users", auth.currentUser.uid, "habits", pendingDeleteId));
   deletePopup.classList.add("hidden");
   habitModal.classList.add("hidden");
   showSuccess("Habit deleted!");
@@ -510,11 +513,40 @@ function showError(msg) {
   setTimeout(() => popup.classList.add("hidden"), 1800);
 }
 
-// ===============================
-//  INIT
-// ===============================
+function initOptionsSheet() {
+  if (!optionsBtn || !optionsSheet || !optionsBackdrop) return;
+
+  function showOptions() {
+    optionsSheet.classList.remove("hidden");
+    requestAnimationFrame(() => {
+      optionsSheet.classList.add("show");
+    });
+    optionsBackdrop.classList.remove("hidden");
+  }
+
+  function hideOptions() {
+    optionsSheet.classList.remove("show");
+    optionsBackdrop.classList.add("hidden");
+    setTimeout(() => {
+      optionsSheet.classList.add("hidden");
+    }, 230);
+  }
+
+  optionsBtn.addEventListener("click", showOptions);
+  optionsBackdrop.addEventListener("click", hideOptions);
+  optionsCloseBtn.addEventListener("click", hideOptions);
+}
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
 initTheme();
+initOptionsSheet();
 generateDateStrip();
 loadHabits();
+});
 
 addFab.addEventListener("click", openCreateHabitModal);

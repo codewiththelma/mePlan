@@ -14,7 +14,8 @@ import {
   doc,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+import { signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 const firebaseConfig = {
   apiKey: "AIzaSyAfuSGsTNTCeJETOHuum5p8f5MWpDib-Ok",
   authDomain: "myplanner-d7f1a.firebaseapp.com",
@@ -27,6 +28,8 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+const auth = getAuth();
 
 // ---- DOM ----
 const themeToggle = document.getElementById("themeToggle");
@@ -119,7 +122,7 @@ function initCurrentMonth() {
 //   LOAD EVENTS
 // ===========================
 async function loadAllEvents() {
-  const snapshot = await getDocs(collection(db, "monthlyEvents"));
+  const snapshot = await getDocs(collection(db, "users", auth.currentUser.uid, "monthlyEvents"));
   allEvents = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
 }
 
@@ -304,10 +307,10 @@ eventForm.addEventListener("submit", async (e) => {
   if (!title || !date || !color) return;
 
   if (id) {
-    await updateDoc(doc(db, "monthlyEvents", id), { title, date, color });
+    await updateDoc(doc(db, "users", auth.currentUser.uid, "monthlyEvents", id), { title, date, color });
     showSuccess("Event updated!");
   } else {
-    await addDoc(collection(db, "monthlyEvents"), {
+    await addDoc(collection(db, "users", auth.currentUser.uid, "monthlyEvents"), {
       title,
       date,
       color,
@@ -340,7 +343,7 @@ cancelDelete.addEventListener("click", () => {
 confirmDelete.addEventListener("click", async () => {
   if (!pendingDeleteId) return;
 
-  await deleteDoc(doc(db, "monthlyEvents", pendingDeleteId));
+  await deleteDoc(doc(db, "users", auth.currentUser.uid, "monthlyEvents", pendingDeleteId));
 
   pendingDeleteId = null;
 
@@ -393,7 +396,11 @@ function initOptionsSheet() {
 // ===========================
 //   INITIALIZE
 // ===========================
-document.addEventListener("DOMContentLoaded", async () => {
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
   initTheme();
   initCurrentMonth();
   await loadAllEvents();

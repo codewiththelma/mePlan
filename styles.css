@@ -679,7 +679,7 @@ body {
   border-radius: 10px;
   border: 1px solid rgba(148, 163, 184, 0.7);
   padding: 0.4rem 0.55rem;
-  font-size: 0.85rem;
+  font-size: 16px;
   background: var(--card-bg);
   color: var(--text-main);
 }

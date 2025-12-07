@@ -1,5 +1,4 @@
-# 🌸 **mePlan+**
-### _Your personal planner, habit tracker, and productivity app — built for mobile._
+# **mePlan+**
 
 mePlan+ is a soft, modern, **mobile-first** productivity app that helps you track your **habits**, **monthly plans**, **checklists**, **savings**, and **daily schedule** — all in one calm, pastel interface.
 

@@ -2663,6 +2663,11 @@ input[type="number"] {
   cursor: pointer;
 
 }
+.habit-date-btn.today-date {
+  background: var(--accent) !important;
+  color: #fff !important;
+  border-color: var(--card-border) !important;
+}
 
 .habit-date-weekday {
   font-size: 0.75rem;
@@ -2678,6 +2683,12 @@ input[type="number"] {
 
 .habit-date-active {
   border-color: var(--accent);
+}
+.habit-date-btn.today-date .habit-date-weekday {
+  color: var(--text-main) !important;
+}
+.habit-date-active.today-date {
+  border-color: var(--shadow-soft) !important;
 }
 
 .habit-mark-btn {

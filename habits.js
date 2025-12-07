@@ -1,12 +1,13 @@
 // ===============================
-//  FIREBASE
+//  FIREBASE INIT
 // ===============================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
 import {
   getFirestore, collection, addDoc, updateDoc, deleteDoc,
-  getDocs, doc, serverTimestamp
+  getDocs, doc, serverTimestamp, deleteField
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
+// FIREBASE CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyAfuSGsTNTCeJETOHuum5p8f5MWpDib-Ok",
   authDomain: "myplanner-d7f1a.firebaseapp.com",
@@ -52,8 +53,6 @@ const dateStrip = document.getElementById("habitDateStrip");
 // ===============================
 let habits = [];
 let pendingDeleteId = null;
-
-// Track current selected date (default = today)
 let selectedDateKey = formatDateKey(new Date());
 
 // ===============================
@@ -76,28 +75,32 @@ function initTheme() {
   applyTheme(theme);
 
   themeToggle.addEventListener("click", () => {
-  const current = document.documentElement.getAttribute("data-theme");
-  applyTheme(current === "dark" ? "light" : "dark");
+    const current = document.documentElement.getAttribute("data-theme");
+    applyTheme(current === "dark" ? "light" : "dark");
 
-  // 🔥 FORCE RE-RENDER AFTER THEME CHANGE
-  generateDateStrip();
-  renderHabits();
-});
-
+    generateDateStrip();
+    renderHabits();
+  });
 }
 
 // ===============================
 //  DATE HELPERS
 // ===============================
 function formatDateKey(date) {
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, "0");
-  const d = String(date.getDate()).padStart(2, "0");
-  return `${y}-${m}-${d}`;
+  let yyyy = date.getFullYear();
+  let mm = String(date.getMonth() + 1).padStart(2, "0");
+  let dd = String(date.getDate()).padStart(2, "0");
+  return `${yyyy}-${mm}-${dd}`;
 }
 
 function getTodayKey() {
   return formatDateKey(new Date());
+}
+
+function getYesterdayKey() {
+  const d = new Date();
+  d.setDate(d.getDate() - 1);
+  return formatDateKey(d);
 }
 
 function getWeekdayShort(date) {
@@ -105,91 +108,141 @@ function getWeekdayShort(date) {
 }
 
 // ===============================
-//  DATE STRIP (INFINITE SCROLL STYLE)
+//  DATE STRIP
 // ===============================
 function generateDateStrip() {
   dateStrip.innerHTML = "";
 
-  // Show -15 days → +15 days
   for (let offset = -15; offset <= 15; offset++) {
     const d = new Date();
     d.setDate(d.getDate() + offset);
 
-    const dayBtn = document.createElement("button");
-    dayBtn.className = "habit-date-btn";
+    const key = formatDateKey(d);
+
+    const btn = document.createElement("button");
+    btn.className = "habit-date-btn";
 
     const weekday = document.createElement("div");
     weekday.className = "habit-date-weekday";
     weekday.textContent = getWeekdayShort(d);
 
-    const dayNum = document.createElement("div");
-    dayNum.className = "habit-date-number";
-    dayNum.textContent = d.getDate();
+    const number = document.createElement("div");
+    number.className = "habit-date-number";
+    number.textContent = d.getDate();
 
-    dayBtn.appendChild(weekday);
-    dayBtn.appendChild(dayNum);
-
-    const key = formatDateKey(d);
+    btn.appendChild(weekday);
+    btn.appendChild(number);
 
     if (key === selectedDateKey) {
-      dayBtn.classList.add("habit-date-active");
+      btn.classList.add("habit-date-active");
     }
+    if (key === getTodayKey()) {
+  btn.classList.add("today-date");
+}
 
-    dayBtn.addEventListener("click", () => {
+
+    btn.addEventListener("click", () => {
       selectedDateKey = key;
       generateDateStrip();
       renderHabits();
     });
 
-    dateStrip.appendChild(dayBtn);
+    dateStrip.appendChild(btn);
   }
-  // After appending all buttons:
-  const todayKey = getTodayKey();
-  const buttons = dateStrip.querySelectorAll(".habit-date-btn");
-  buttons.forEach(btn => {
-    if (btn.classList.contains("habit-date-active")) {
-      btn.scrollIntoView({ inline: "center", behavior: "instant" });
-    }
-  });
 
+  const active = dateStrip.querySelector(".habit-date-active");
+  if (active) active.scrollIntoView({ inline: "center", behavior: "instant" });
 }
 
 // ===============================
-//  FIRESTORE LOAD
+//  AUTO-MIGRATION
+// ===============================
+async function migrateHabit(habit) {
+  if (habit.completedDates) return habit; // already migrated
+
+  let completedDates = [];
+
+  if (habit.lastCompletedDate) {
+    completedDates = [habit.lastCompletedDate];
+  }
+
+  await updateDoc(doc(db, "habits", habit.id), {
+    completedDates,
+    lastCompletedDate: deleteField()
+  });
+
+  habit.completedDates = completedDates;
+  return habit;
+}
+
+// ===============================
+//  AUTO RESET STREAK
+// ===============================
+function autoResetStreak(habit) {
+  const today = getTodayKey();
+  const yesterday = getYesterdayKey();
+
+  const dates = habit.completedDates || [];
+  const last = dates[dates.length - 1];
+
+  if (!last) return 0;
+
+  if (last === today) return habit.streak || 0;
+  if (last === yesterday) return habit.streak || 0;
+
+  return 0;
+}
+
+// ===============================
+//  LOAD HABITS
 // ===============================
 async function loadHabits() {
   const snap = await getDocs(collection(db, "habits"));
-  habits = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+  habits = [];
+
+  for (let d of snap.docs) {
+    let h = { id: d.id, ...d.data() };
+
+    // Migrate old → new
+    h = await migrateHabit(h);
+
+    // Reset streak if needed
+    const newStreak = autoResetStreak(h);
+    if (newStreak !== h.streak) {
+      await updateDoc(doc(db, "habits", h.id), { streak: newStreak });
+      h.streak = newStreak;
+    }
+
+    habits.push(h);
+  }
+
   renderHabits();
 }
 
 // ===============================
-//  STREAK LOGIC + MARK TODAY
+//  MARK TODAY COMPLETE
 // ===============================
 async function markHabitToday(habit) {
-  const todayKey = getTodayKey();
+  const today = getTodayKey();
+  const yesterday = getYesterdayKey();
 
-  if (selectedDateKey !== todayKey) {
+  if (selectedDateKey !== today) {
     showError("You can only complete today's habits!");
     return;
   }
 
-  // --- TOGGLE LOGIC ---
-  const isAlreadyDone = habit.lastCompletedDate === todayKey;
+  const dates = habit.completedDates || [];
 
-  if (isAlreadyDone) {
-    // UNDO today
-    let newStreak = habit.streak || 0;
+  const alreadyDone = dates.includes(today);
 
-    // If streak was > 1, reduce by 1
-    if (newStreak > 1) {
-      newStreak = newStreak - 1;
-    } else {
-      newStreak = 0;
-    }
+  // UNMARK TODAY
+  if (alreadyDone) {
+    const newDates = dates.filter(d => d !== today);
+    const newStreak = Math.max(0, (habit.streak || 0) - 1);
 
     await updateDoc(doc(db, "habits", habit.id), {
-      lastCompletedDate: "",
+      completedDates: newDates,
       streak: newStreak
     });
 
@@ -198,16 +251,16 @@ async function markHabitToday(habit) {
     return;
   }
 
-  // --- MARK AS DONE ---
-  const yesterdayKey = formatDateKey(new Date(Date.now() - 86400000));
+  // MARK TODAY
+  let newDates = [...dates, today];
   let newStreak = 1;
 
-  if (habit.lastCompletedDate === yesterdayKey) {
+  if (dates.includes(yesterday)) {
     newStreak = (habit.streak || 0) + 1;
   }
 
   await updateDoc(doc(db, "habits", habit.id), {
-    lastCompletedDate: todayKey,
+    completedDates: newDates,
     streak: newStreak
   });
 
@@ -215,9 +268,8 @@ async function markHabitToday(habit) {
   await loadHabits();
 }
 
-
 // ===============================
-//  RENDER HABITS
+//  ORIGINAL PASTELIZE() — RESTORED
 // ===============================
 function pastelize(hex) {
   const isDark = document.documentElement.getAttribute("data-theme") === "dark";
@@ -255,6 +307,9 @@ function pastelize(hex) {
 }
 
 
+// ===============================
+//  RENDER HABITS
+// ===============================
 function renderHabits() {
   habitListEl.innerHTML = "";
 
@@ -264,19 +319,19 @@ function renderHabits() {
   }
   habitEmptyStateEl.classList.add("hidden");
 
+  const today = getTodayKey();
+
   habits.forEach(habit => {
     const li = document.createElement("li");
     li.className = "habit-item";
 
-    const isCompletedToday =
-      habit.lastCompletedDate === getTodayKey() &&
-      selectedDateKey === getTodayKey();
+    const completed = habit.completedDates?.includes(selectedDateKey);
 
-    if (isCompletedToday) {
+    if (completed) {
       li.style.background = pastelize(habit.color);
     }
 
-    // LEFT PART
+    // LEFT
     const left = document.createElement("div");
     left.className = "habit-left";
 
@@ -287,29 +342,34 @@ function renderHabits() {
     title.className = "habit-title";
     title.textContent = habit.title;
 
+    const s = habit.streak || 0;
     const meta = document.createElement("span");
     meta.className = "habit-meta";
-    meta.textContent = `🔥 ${habit.streak || 0} Days`;
-
+    meta.textContent = s === 1 ? "🔥 1 day" : `🔥 ${s} days`;
 
     textWrap.appendChild(title);
     textWrap.appendChild(meta);
     left.appendChild(textWrap);
 
-    // MARK BUTTON
+    // BUTTON
     const markBtn = document.createElement("button");
     markBtn.className = "habit-mark-btn";
 
-    if (isCompletedToday) {
-      markBtn.classList.add("habit-mark-btn-done");
+    if (completed) {
       markBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
+      markBtn.classList.add("habit-mark-btn-done");
     } else {
       markBtn.innerHTML = '<i class="fa-regular fa-circle"></i>';
     }
 
-    // Only allow marking today
-    markBtn.addEventListener("click", async () => {
-      await markHabitToday(habit);
+    if (selectedDateKey !== today) {
+      markBtn.classList.add("disabled-check");
+    }
+
+    markBtn.addEventListener("click", () => {
+      if (selectedDateKey === today) {
+        markHabitToday(habit);
+      }
     });
 
     // ACTIONS
@@ -319,15 +379,11 @@ function renderHabits() {
     const editBtn = document.createElement("button");
     editBtn.className = "icon-button-sm";
     editBtn.innerHTML = '<i class="fa-solid fa-pen"></i>';
+    editBtn.addEventListener("click", () => openEditHabitModal(habit));
 
     const deleteBtn = document.createElement("button");
     deleteBtn.className = "icon-button-sm";
     deleteBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
-
-    editBtn.addEventListener("click", () => {
-      openEditHabitModal(habit);
-    });
-
     deleteBtn.addEventListener("click", () => {
       pendingDeleteId = habit.id;
       deletePopup.classList.remove("hidden");
@@ -336,27 +392,24 @@ function renderHabits() {
     actions.appendChild(editBtn);
     actions.appendChild(deleteBtn);
 
+    const right = document.createElement("div");
+    right.style.display = "flex";
+    right.style.flexDirection = "column";
+    right.style.alignItems = "flex-end";
+    right.style.gap = "4px";
+
+    right.appendChild(markBtn);
+    right.appendChild(actions);
+
     li.appendChild(left);
-
-    const rightCol = document.createElement("div");
-    rightCol.style.display = "flex";
-    rightCol.style.flexDirection = "column";
-    rightCol.style.alignItems = "flex-end";
-    rightCol.style.justifyContent = "center";
-    rightCol.style.gap = "4px";
-
-    rightCol.appendChild(markBtn);
-    rightCol.appendChild(actions);
-
-    li.appendChild(rightCol);
-
+    li.appendChild(right);
 
     habitListEl.appendChild(li);
   });
 }
 
 // ===============================
-//  MODALS
+//  MODAL HANDLERS
 // ===============================
 function openCreateHabitModal() {
   habitModalTitle.textContent = "Add Habit";
@@ -372,7 +425,11 @@ function openEditHabitModal(habit) {
   habitIdInput.value = habit.id;
   habitTitleInput.value = habit.title;
   habitColorInput.value = habit.color;
-  setHabitColor(habit.color);
+
+  habitColorDots.forEach(dot =>
+    dot.classList.toggle("color-selected", dot.dataset.color === habit.color)
+  );
+
   deleteHabitBtn.classList.remove("hidden");
   habitModal.classList.remove("hidden");
 }
@@ -398,7 +455,7 @@ habitForm.addEventListener("submit", async e => {
       title,
       color,
       streak: 0,
-      lastCompletedDate: "",
+      completedDates: [],
       createdAt: serverTimestamp(),
     });
     showSuccess("Habit added!");
@@ -411,51 +468,16 @@ habitForm.addEventListener("submit", async e => {
 // ===============================
 //  COLOR PICKER
 // ===============================
-function clearHabitColorSelection() {
-  habitColorDots.forEach(dot => dot.classList.remove("color-selected"));
-}
-function initOptionsSheet() {
-  if (!optionsBtn || !optionsSheet || !optionsBackdrop) return;
-
-  function showOptions() {
-    optionsSheet.classList.remove("hidden");
-    requestAnimationFrame(() => {
-      optionsSheet.classList.add("show");
-    });
-    optionsBackdrop.classList.remove("hidden");
-  }
-
-  function hideOptions() {
-    optionsSheet.classList.remove("show");
-    optionsBackdrop.classList.add("hidden");
-    setTimeout(() => {
-      optionsSheet.classList.add("hidden");
-    }, 230);
-  }
-
-  optionsBtn.addEventListener("click", showOptions);
-  optionsBackdrop.addEventListener("click", hideOptions);
-  optionsCloseBtn.addEventListener("click", hideOptions);
-}
-
-function setHabitColor(color) {
-  clearHabitColorSelection();
-  habitColorDots.forEach(dot => {
-    if (dot.dataset.color === color) {
-      dot.classList.add("color-selected");
-    }
-  });
-  habitColorInput.value = color;
-}
-
 habitColorDots.forEach(dot => {
-  dot.addEventListener("click", () =>
-    setHabitColor(dot.dataset.color)
-  );
+  dot.addEventListener("click", () => {
+    habitColorDots.forEach(d => d.classList.remove("color-selected"));
+    dot.classList.add("color-selected");
+    habitColorInput.value = dot.dataset.color;
+  });
 });
 
 // ===============================
-//  DELETE HABIT
+//  DELETE
 // ===============================
 cancelDelete.addEventListener("click", () => {
   deletePopup.classList.add("hidden");
@@ -470,17 +492,15 @@ confirmDelete.addEventListener("click", async () => {
 });
 
 // ===============================
-//  SUCCESS POPUP
+//  POPUPS
 // ===============================
-function showSuccess(msg = "Success!") {
+function showSuccess(msg) {
   successMessageEl.textContent = msg;
   successPopup.classList.remove("hidden");
-
-  setTimeout(() => {
-    successPopup.classList.add("hidden");
-  }, 1600);
+  setTimeout(() => successPopup.classList.add("hidden"), 1600);
 }
-function showError(msg = "Something went wrong") {
+
+function showError(msg) {
   const popup = document.getElementById("errorPopup");
   const text = document.getElementById("errorMessage");
 
@@ -494,7 +514,6 @@ function showError(msg = "Something went wrong") {
 //  INIT
 // ===============================
 initTheme();
-initOptionsSheet();
 generateDateStrip();
 loadHabits();
 

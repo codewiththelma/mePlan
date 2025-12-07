@@ -221,26 +221,34 @@ function loadVerse() {
   quoteTextEl.textContent = verse.text;
   quoteRefEl.textContent = verse.ref;
 }
+
 async function fetchHabitsToday() {
   const habitsCol = collection(db, "habits");
   const snapshot = await getDocs(habitsCol);
-  const allHabits = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-  return allHabits;
+
+  return snapshot.docs.map(doc => ({
+    id: doc.id,
+    ...doc.data(),
+    completedDates: doc.data().completedDates || [], // ensure array exists
+    streak: doc.data().streak || 0
+  }));
 }
+
 async function homeToggleHabit(habit) {
-  const todayKey = new Date().toISOString().slice(0, 10);
+  const today = new Date().toISOString().slice(0, 10);
+  const yesterday = formatDateKey(new Date(Date.now() - 86400000));
 
   const habitRef = doc(db, "habits", habit.id);
-  const yesterdayKey = formatDateKey(new Date(Date.now() - 86400000));
+  const dates = habit.completedDates || [];
+  const alreadyDone = dates.includes(today);
 
-  const isDone = habit.lastCompletedDate === todayKey;
-
-  // UNDO
-  if (isDone) {
+  // UNMARK TODAY
+  if (alreadyDone) {
+    const newDates = dates.filter(d => d !== today);
     const newStreak = Math.max(0, (habit.streak || 0) - 1);
 
     await updateDoc(habitRef, {
-      lastCompletedDate: "",
+      completedDates: newDates,
       streak: newStreak
     });
 
@@ -248,49 +256,48 @@ async function homeToggleHabit(habit) {
     return;
   }
 
-  // MARK DONE
+  // MARK TODAY
+  let newDates = [...dates, today];
   let newStreak = 1;
-  if (habit.lastCompletedDate === yesterdayKey) {
+
+  // If yesterday was done, continue streak
+  if (dates.includes(yesterday)) {
     newStreak = (habit.streak || 0) + 1;
   }
 
   await updateDoc(habitRef, {
-    lastCompletedDate: todayKey,
+    completedDates: newDates,
     streak: newStreak
   });
 
   await loadHomeHabits();
 }
 
+
 async function loadHomeHabits() {
   const listEl = document.getElementById("todayHabits");
   listEl.innerHTML = "";
 
   const habits = await fetchHabitsToday();
-  const todayKey = new Date().toISOString().slice(0, 10);
+  const today = new Date().toISOString().slice(0, 10);
 
   if (!habits.length) {
     listEl.innerHTML = `<p class="today-empty">No habits created yet.</p>`;
     return;
   }
 
-  // Split habits into completed vs incomplete
-  const completed = habits.filter(h => h.lastCompletedDate === todayKey);
-  const incomplete = habits.filter(h => h.lastCompletedDate !== todayKey);
+  const completed = habits.filter(h => h.completedDates.includes(today));
+  const incomplete = habits.filter(h => !h.completedDates.includes(today));
 
-  // 🔥 If ALL habits are completed → show message only
+  // All done
   if (completed.length === habits.length) {
-    listEl.innerHTML = `
-      <p class="today-empty">All habits completed 🎉</p>
-    `;
+    listEl.innerHTML = `<p class="today-empty">All habits completed 🎉</p>`;
     return;
   }
 
-  // 🔥 Otherwise show only incomplete habits
-  const habitsToShow = incomplete;
-
-  habitsToShow.forEach(habit => {
-    const isDone = habit.lastCompletedDate === todayKey;
+  // Show only incomplete
+  incomplete.forEach(habit => {
+    const isDone = habit.completedDates.includes(today);
 
     const item = document.createElement("div");
     item.className = "home-habit-item";
@@ -304,13 +311,16 @@ async function loadHomeHabits() {
 
     const streak = document.createElement("span");
     streak.className = "home-habit-streak";
-    streak.textContent = `🔥 ${habit.streak || 0} Days`;
+
+    const s = habit.streak || 0;
+    streak.textContent = s === 1 ? "🔥 1 day" : `🔥 ${s} days`;
 
     left.appendChild(name);
     left.appendChild(streak);
 
     const markBtn = document.createElement("button");
     markBtn.className = "home-habit-mark";
+
     markBtn.innerHTML = isDone
       ? `<i class="fa-solid fa-check"></i>`
       : `<i class="fa-regular fa-circle"></i>`;
@@ -323,8 +333,6 @@ async function loadHomeHabits() {
     listEl.appendChild(item);
   });
 }
-
-
 
 
 function formatDateKey(date) {

@@ -63,7 +63,7 @@ function applyTheme(theme) {
 
   const logoEl = document.getElementById("brandLogo");
   if (logoEl) {
-    logoEl.src = theme === "dark" ? "logo-dark.png" : "logo.png";
+    logoEl.src = theme === "dark" ? "logo2.png" : "logo2.png";
   }
 
 }
@@ -74,11 +74,6 @@ function initTheme() {
     window.matchMedia("(prefers-color-scheme: dark)").matches;
   const theme = saved || (prefersDark ? "dark" : "light");
   applyTheme(theme);
-
-  const logoEl = document.getElementById("brandLogo");
-  if (logoEl) {
-    logoEl.src = theme === "dark" ? "logo-dark.png" : "logo.png";
-  }
 
   themeToggleBtn.addEventListener("click", () => {
     const current = document.documentElement.getAttribute("data-theme") || "light";

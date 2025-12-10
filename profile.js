@@ -226,10 +226,6 @@ function applyTheme(theme) {
   iconEl.classList.remove("fa-moon", "fa-sun");
   iconEl.classList.add(theme === "dark" ? "fa-sun" : "fa-moon");
 
-  const logoEl = document.getElementById("brandLogo");
-  if (logoEl) {
-    logoEl.src = theme === "dark" ? "logo2.png" : "logo2.png";
-  }
 }
 
 function initTheme() {

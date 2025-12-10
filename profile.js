@@ -228,7 +228,7 @@ function applyTheme(theme) {
 
   const logoEl = document.getElementById("brandLogo");
   if (logoEl) {
-    logoEl.src = theme === "dark" ? "logo-dark.png" : "logo.png";
+    logoEl.src = theme === "dark" ? "logo2.png" : "logo2.png";
   }
 }
 

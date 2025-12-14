@@ -110,11 +110,11 @@ body {
   letter-spacing: 0.5px;
 }
 
-
-
-
 .icon-button i {
-  font-size: 0.95rem;
+  font-size: 1.2rem;
+}
+.icon-button i:hover {
+  color: var(--accent);
 }
 
 /* MAIN CONTENT */
@@ -2882,7 +2882,7 @@ input[type="number"] {
 }
 .top-bar-side{
   display: flex;
-  gap: .5rem;
+  gap: .2rem;
 }
 .profile-card {
   max-width: 380px;

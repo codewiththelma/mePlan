@@ -383,6 +383,8 @@ onAuthStateChanged(auth, async (user) => {
   updateMonthTitle();
   initOptionsSheet();
   await loadTodosForCurrentMonth();
+  document.body.classList.remove("spa-preload");
+  document.getElementById("preloader").style.display = "none";
 
   prevMonthBtn.addEventListener("click", async () => {
     currentMonthIndex--;

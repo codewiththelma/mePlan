@@ -406,6 +406,8 @@ onAuthStateChanged(auth, async (user) => {
   await loadAllEvents();
   renderCalendar();
   initOptionsSheet();
+  document.body.classList.remove("spa-preload");
+  document.getElementById("preloader").style.display = "none";
 
   prevMonthBtn.addEventListener("click", () => {
     currentMonthIndex--;

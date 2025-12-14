@@ -553,6 +553,8 @@ onAuthStateChanged(auth, async (user) => {
   initTheme();
   initTimePickers();
   initOptionsSheet();
+  document.body.classList.remove("spa-preload");
+  document.getElementById("preloader").style.display = "none";
 
   scheduleId = new URLSearchParams(window.location.search).get("id");
   if (!scheduleId) {

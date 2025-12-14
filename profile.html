@@ -52,46 +52,36 @@
     </header>
 
   <main class="main-content">
+    <div class="profile-content">
+    <h3 class="pro-title">Personal Info</h3>
+      <!-- Username -->
+      <label class="profile-label">Username</label>
+      <input id="profileName" class="pro-input" type="text" placeholder="Your username" autocomplete="off" />
 
-    <div class="card" style="padding-bottom:2rem;">
-      <h2 style="margin-top:0; font-size:1.2rem; font-weight:800;">My Profile</h2>
+      <!-- Email -->
+      <label class="profile-label">Email</label>
+      <input id="profileEmail" class="pro-input" type="email" disabled />
 
-      <label class="profile-label">
-        Username
-        <input id="profileName" class="input" type="text" placeholder="Your username">
-        </label>
+      <!-- Password Display -->
+      <label class="profile-label">Password</label>
+      <input class="pro-input" type="password" value="********" disabled />
+      <button id="changePasswordBtn" class="link-button2">Change Password</button>
 
+      <!-- Created -->
+      <label class="profile-label">Created On</label>
+      <input id="profileCreated" class="pro-input" type="text" disabled />
 
-      <label class="profile-label">
-        Email
-        <input id="profileEmail" class="input" type="email" disabled>
-      </label>
-
-      <label class="profile-label">
-        Password
-        <input class="input" type="password" value="********" disabled>
-        </label>
-
-        <button id="changePasswordBtn" class="link-button" style="margin-top:-8px;">
-        Change Password
+      <!-- Action Buttons -->
+      <div class="profile-actions">
+        <button id="logoutBtn" class="secondary-btn full-width">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
         </button>
 
-        <label class="profile-label">
-        Created On
-        <input id="profileCreated" class="input" type="text" disabled>
-        </label>
-
-
-      <div class="modal-footer">
-        <button id="logoutBtn" type="submit" class="btn-primary">
-            <i class="fa-solid fa-arrow-rotate-left"></i> Logout
+        <button id="deleteAccountBtn" class="delete-btn2 full-width">
+          <i class="fa-solid fa-trash"></i> Delete Account
         </button>
-        <button id="deleteAccountBtn" type="button" id="deleteEventBtn" class="btn-outline">
-            <i class="fa-solid fa-trash"></i> Delete Account
-        </button>
-        </div>
-    </div>
-
+      </div>
+</div>
   </main>
   <!-- CHANGE PASSWORD MODAL -->
 <div id="passwordModal" class="modal-overlay hidden">
@@ -183,6 +173,10 @@
   <button onclick="location.href='schedule-list.html'">
     <i class="fa-solid fa-clock" style="color:rgb(251, 247, 45);"></i>
     Schedule
+  </button>
+  <button onclick="location.href='travel.html'">
+    <i class="fa-solid fa-plane" style="color:rgb(25, 236, 240);"></i>
+    Travel Planner
   </button>
 </div>
 

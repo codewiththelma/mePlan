@@ -204,7 +204,7 @@ function isDetailMode() {
 //   LOAD & RENDER LIST
 // =========================
 async function loadSavingsGoals() {
-  const snap = await getDocs(collection(db, "users", auth.currentUser.uid, "users", auth.currentUser.uid, "savingsGoals"));
+  const snap = await getDocs(collection(db, "users", auth.currentUser.uid, "savingsGoals"));
   savingsGoals = snap.docs.map(d => ({ id: d.id, ...d.data() }));
   renderSavingsList();
   updateTotalSaved();
@@ -803,6 +803,8 @@ onAuthStateChanged(auth, async (user) => {
   initTheme();
   initOptionsSheet();
   await loadSavingsGoals();
+  document.body.classList.remove("spa-preload");
+  document.getElementById("preloader").style.display = "none";
 
   const { id } = parseQueryParams();
   if (id) {

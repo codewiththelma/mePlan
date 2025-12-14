@@ -1955,15 +1955,24 @@ body {
   font-size: 1.2rem;
 }
 
-.saving-card-text .saving-title {
+
+.saving-card-text .saving-title,.travel-card-text .saving-title {
   font-weight: 700;
   font-size: 1.05rem;
 }
 
-.saving-card-text .saving-subtitle {
+.saving-card-text .saving-subtitle, .travel-card-text .saving-subtitle {
   font-size: 0.85rem;
   opacity: 0.7;
   margin-top: 0.2rem;
+}
+.travel-card-text .saving-subtitle {
+  font-size: 0.8rem;
+}
+
+.saving-clock{
+  font-size: 0.8rem;
+  color: var(--text-muted);
 }
 
 .saving-card-right {
@@ -2805,7 +2814,8 @@ input[type="number"] {
     padding-bottom: 3rem;
   }
   .options-sheet {
-  height: 30%;
+  height: 40%;
+
 }
 }
 .modal-card input,
@@ -2890,23 +2900,69 @@ input[type="number"] {
   margin-top: 1rem;
 }
 .profile-label {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  font-size: 0.8rem;
-  font-weight: 600;
-  margin-bottom: .5rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 600rem;
+}
+.pro-input {
+  width: 100%;
+  padding: 0.6rem;
+  border-radius: 10px;
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  color: var(--text-main);
+  box-shadow: var(--shadow-soft);
+  margin: .5rem 0 1rem 0;
 }
 #passwordModal .modal-card {
   max-width: 360px;
 }
-.link-button{
-  margin: 1rem 0;
-  cursor: pointer;
-}
-.link-button:hover{
+.link-button2 {
+  background: none;
+  border: none;
   color: var(--accent);
+  margin-top: 0.35rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  width: 100%;
+  text-align: right;
 }
+.profile-actions {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.profile-content{
+  padding-bottom: 5rem;
+  gap: 1rem;
+  width: 90%;
+  max-width: 600px;
+  margin: auto;
+}
+/* Delete */
+.delete-btn2 {
+  background: #dc2626;
+  color: #fff;
+  padding: 0.6rem 0.9rem;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+.secondary-btn {
+  padding: 0.6rem 0.9rem;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: opacity 0.25s ease;
+}
+
 
 .auth-logo {
   width: 85px;
@@ -2957,4 +3013,267 @@ input[type="number"] {
 }
  input{
   font-size: 16px;
+}
+
+/* =========================
+   TRAVEL – TRIP DETAIL
+========================= */
+
+.trip-detail-main {
+  padding-bottom: 90px;
+}
+
+
+.trip-header {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 1.2rem;
+}
+
+.trip-image {
+  width: 40%;
+  height: 150px;
+  border-radius: 14px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.trip-right {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.trip-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.trip-date {
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.trip-status {
+  margin-top: 0.3rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Section headers */
+.trip-section .section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.trip-section .section-header .icon-button-sm {
+  margin-left: auto;
+}
+
+
+.trip-section h2 {
+  font-size: 1rem;
+  font-weight: 700;
+}
+.trip-section .content {
+  overflow: hidden;
+  transition: max-height 0.25s ease, opacity 0.2s ease;
+}
+
+.trip-section.collapsed .content {
+  max-height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.collapse-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+}
+
+.collapse-btn i {
+  transition: transform 0.25s ease;
+}
+
+.trip-section.collapsed .collapse-btn i {
+  transform: rotate(-90deg);
+}
+
+
+/* Checklist (Places / Food) */
+.checklist-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.checklist-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+}
+
+.check-btn {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  color: var(--accent);
+}
+
+.checklist-list span {
+  flex: 1;
+  font-size: 0.9rem;
+}
+
+.checklist-list span.completed {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+/* Notes */
+.notes-display {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  white-space: pre-wrap; /* IMPORTANT: preserve new lines */
+  color: var(--text);
+  margin-left: 2rem;
+}
+/* =========================
+   TRAVEL – LIST PAGE
+========================= */
+
+.travel-main {
+  padding-bottom: 90px; /* bottom nav + FAB */
+}
+.travel-card-main {
+  display: flex;
+  gap: 2rem;
+
+}
+/* Image circle */
+.travel-icon-circle {
+  width: 90px;
+  height: 90px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.travel-icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.schedule-list-empty {
+  text-align: center;
+  margin-top: 40px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.travel-right{
+  display: flex;
+  justify-content: space-between;
+  gap: .5rem;
+  width: 100%;  
+}
+.travel-card-text {
+  flex: 1;                  /* pushes menu to the end */
+}
+
+.saving-menu-btn {
+  margin-left: auto;        /* forces it to the far right */
+}
+/* Ensure card is positioning context */
+.travel-goal-card {
+  border-radius: 18px;
+  position: relative;
+  width: 95%;
+  margin: auto;
+}
+/* === Inline edit/delete actions (match savings.html) === */
+
+.saving-card-actions {
+  position: relative;
+}
+
+/* Pencil + trash container */
+.inline-actions {
+  position: absolute;
+  bottom: 0;       /* same vertical offset as savings */
+  right: 0;        /* same horizontal offset as savings */
+  display: flex;
+  z-index: 5;
+  gap: .3rem;
+}
+
+.inline-actions.hidden {
+  display: none;
+}
+
+/* Icon buttons */
+.travel-button-only {
+  border: none;
+  display: flex;
+  background:none ;
+  cursor: pointer;
+}
+
+.travel-button-only i {
+  font-size: 0.9rem;
+}
+.travel-button-only:first-child {
+  color: var(--text-muted);
+}
+.travel-button-only i:hover {
+  transform: scale(1.1);
+}
+
+.travel-button-only.danger {
+  color: #dc2626 !important;
+}
+@media (min-width: 600px) {
+  .travel-goal-card {
+    width: 80%;
+
+  }
+}
+
+#preloader {
+  display: flex;
+}
+
+.spa-preload .view {
+  display: none !important;
+}
+
+.preloader {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.loader-dumbbell i {
+  font-size: 42px;
+  color: var(--text-main);
+  animation: spinLoader 1s linear infinite;
+}
+
+@keyframes spinLoader {
+  0% { transform: rotate(0deg) scale(1); opacity: 1; }
+  50% { transform: rotate(180deg) scale(1.05); opacity: 0.9; }
+  100% { transform: rotate(360deg) scale(1); opacity: 1; }
 }

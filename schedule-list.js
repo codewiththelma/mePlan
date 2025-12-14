@@ -366,4 +366,6 @@ onAuthStateChanged(auth, async (user) => {
   initTheme();
   initOptionsSheet();
   await loadSchedules();
+  document.body.classList.remove("spa-preload");
+  document.getElementById("preloader").style.display = "none";
 });

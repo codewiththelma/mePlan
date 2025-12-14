@@ -547,6 +547,8 @@ initTheme();
 initOptionsSheet();
 generateDateStrip();
 loadHabits();
+document.body.classList.remove("spa-preload");
+  document.getElementById("preloader").style.display = "none";
 });
 
 addFab.addEventListener("click", openCreateHabitModal);

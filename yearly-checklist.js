@@ -464,6 +464,8 @@ onAuthStateChanged(auth, async (user) => {
   updateYearTitle();
   initOptionsSheet();
   await loadYearlyItems();
+  document.body.classList.remove("spa-preload");
+  document.getElementById("preloader").style.display = "none";
 
   prevYearBtn.addEventListener("click", async () => {
     currentYear--;

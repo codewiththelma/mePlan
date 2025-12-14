@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mePlan+ – Trip</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&display=swap" rel="stylesheet">
+
+  <link rel="icon" href="logo2.png" />
+  <link rel="manifest" href="manifest.json" />
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
+  <!-- Theme preload -->
+  <script>
+    const theme =
+      localStorage.getItem("meplan-theme") ||
+      (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  </script>
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<div class="app-root spa-preload">
+  <div id="preloader" class="preloader">
+  <div class="loader-dumbbell">
+  <i class="fa-solid fa-spinner"></i>
+</div>
+</div>
+
+  <!-- HEADER -->
+  <header class="top-bar">
+    <div class="brand monthly-brand">
+      <button class="back-button" onclick="history.back()">
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
+      <span id="tripTitle" class="brand-name">Trip</span>
+    </div>
+
+    <div class="top-bar-side">
+      <button id="themeToggle" class="icon-button">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+      <button class="icon-button" onclick="location.href='profile.html'">
+        <i class="fa-solid fa-user"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="main-content trip-detail-main">
+
+    <section class="trip-header card">
+  <img
+        id="tripImage"
+        alt="Trip image"
+        class="trip-image"
+      />
+
+  <div class="trip-right">
+    <div>
+      <div class="trip-label">From</div>
+      <div id="tripFrom" class="trip-date"></div>
+    </div>
+
+    <div>
+      <div class="trip-label">To</div>
+      <div id="tripTo" class="trip-date"></div>
+    </div>
+
+    <div id="tripStatus" class="trip-status"></div>
+  </div>
+</section>
+
+    <!-- PLACES -->
+    <section class="trip-section card collapsible collapsed">
+    <div class="section-header">
+        <button class="collapse-btn">
+            <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <h2>Places to visit</h2>
+        <button id="addPlaceBtn" class="icon-button-sm">
+          <i class="fa-solid fa-plus"></i>
+        </button>
+      </div>
+
+      <div class="content">
+      <ul id="placesList" class="checklist-list">
+        <!-- checklist items injected -->
+      </ul>
+      </div>
+    </section>
+
+    <!-- FOOD -->
+    <section class="trip-section card collapsible collapsed">
+        <div class="section-header">
+        <button class="collapse-btn">
+            <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <h2>Food</h2>
+        <button id="addFoodBtn" class="icon-button-sm">
+          <i class="fa-solid fa-plus"></i>
+        </button>
+      </div>
+
+      <div class="content">
+      <ul id="foodList" class="checklist-list">
+        <!-- checklist items injected -->
+      </ul>
+      </div>
+    </section>
+
+    <!-- NOTES -->
+    <section class="trip-section card collapsible collapsed">
+      <div class="section-header">
+        <button class="collapse-btn">
+            <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <h2>Notes</h2>
+        <button id="editNotesBtn" class="icon-button-sm">
+          <i class="fa-solid fa-pen"></i>
+        </button>
+      </div>
+      <div class="content">
+      <div id="notesDisplay" class="notes-display">
+        Bring umbrella  
+        Book Louvre tickets  
+        Airport at least 2 hours early
+      </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FAB (optional, if you want later) -->
+  <!-- <button class="fab-add"><i class="fa-solid fa-plus"></i></button> -->
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button class="nav-item" onclick="location.href='index.html'">
+      <i class="fa-solid fa-house"></i><span>Home</span>
+    </button>
+    <button class="nav-item" onclick="location.href='calendar.html'">
+      <i class="fa-solid fa-calendar-days"></i><span>Calendar</span>
+    </button>
+    <button class="nav-item" id="optionsBtn">
+      <i class="fa-solid fa-circle-chevron-up"></i><span>More</span>
+    </button>
+  </nav>
+
+  <!-- ADD PLACE MODAL -->
+  <div id="placeModal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>Add place</h2>
+        <button class="modal-close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="modal-body">
+        <label class="field-label">
+          Place name
+          <input id="placeInput" class="input" />
+        </label>
+
+        <div class="modal-footer">
+          <button class="btn-primary">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD FOOD MODAL -->
+  <div id="foodModal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>Add food</h2>
+        <button class="modal-close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="modal-body">
+        <label class="field-label">
+          Food place
+          <input id="foodInput" class="input" />
+        </label>
+
+        <div class="modal-footer">
+          <button class="btn-primary">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDIT NOTES MODAL -->
+  <div id="notesModal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>Edit notes</h2>
+        <button class="modal-close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="modal-body">
+        <textarea
+          id="notesTextarea"
+          class="input textarea"
+          rows="6"
+          placeholder="Write notes here..."
+        ></textarea>
+
+        <div class="modal-footer">
+          <button class="btn-primary">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DELETE CONFIRM POPUP -->
+  <div id="deletePopup" class="popup-overlay hidden">
+    <div class="popup-card">
+      <p class="popup-text">Delete this item?</p>
+      <div class="popup-buttons">
+        <button class="popup-btn cancel-btn">Cancel</button>
+        <button class="popup-btn delete-btn">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUCCESS POPUP -->
+  <div id="successPopup" class="success-overlay hidden">
+    <div class="success-card">
+      <i class="fa-solid fa-check-circle success-icon"></i>
+      <p id="successMessage" class="success-text">Saved!</p>
+    </div>
+  </div>
+  <div id="errorPopup" class="success-overlay hidden">
+    <div class="success-card">
+      <div class="success-icon" style="color:#ef4444;"><i class="fa-solid fa-xmark-circle"></i></div>
+      <div id="errorMessage" class="success-text"></div>
+    </div>
+  </div>
+
+  <!-- OPTIONS SHEET (REUSED EXACTLY) -->
+  <div id="optionsSheet" class="options-sheet hidden">
+    <div class="options-handle"></div>
+    <div class="options-close" id="optionsCloseBtn">
+      <i class="fa-solid fa-xmark"></i>
+    </div>
+
+    <div class="options-grid">
+  <button onclick="location.href='monthly.html'">
+    <i class="fa-solid fa-calendar" style="color:rgb(25, 250, 40);"></i>
+    Monthly Planner
+  </button>
+
+  <button onclick="location.href='monthly-todo.html'">
+    <i class="fa-solid fa-list-check" style="color:rgb(247, 43, 189);"></i>
+    Monthly To-Do
+  </button>
+
+  <button onclick="location.href='yearly-checklist.html'">
+    <i class="fa-solid fa-bullseye" style="color:rgb(243, 150, 19);"></i>
+    Checklist
+  </button>
+
+  <button onclick="location.href='savings.html'">
+    <i class="fa-solid fa-piggy-bank" style="color:rgb(239, 21, 21);"></i>
+    Savings
+  </button>
+      <button onclick="location.href='habits.html'">
+    <i class="fa-solid fa-lightbulb" style="color:rgb(42, 8, 234);"></i>
+    Habits
+      <button onclick="location.href='schedule-list.html'">
+    <i class="fa-solid fa-clock" style="color:rgb(251, 247, 45);"></i>
+    Schedule
+  </button>
+  <button onclick="location.href='travel.html'">
+    <i class="fa-solid fa-plane" style="color:rgb(25, 236, 240);"></i>
+    Travel Planner
+  </button>
+    </div>
+  </div>
+
+  <div id="optionsBackdrop" class="options-backdrop hidden"></div>
+
+</div>
+
+<script type="module" src="travel-trip.js"></script>
+</body>
+</html>

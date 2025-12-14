@@ -32,7 +32,12 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="app-root">
+    <div class="app-root spa-preload">
+    <div id="preloader" class="preloader">
+    <div class="loader-dumbbell">
+    <i class="fa-solid fa-spinner"></i>
+  </div>
+  </div>
     <!-- HEADER -->
     <header class="top-bar">
       <div class="brand monthly-brand">
@@ -231,6 +236,10 @@
   <button onclick="location.href='schedule-list.html'">
     <i class="fa-solid fa-clock" style="color:rgb(251, 247, 45);"></i>
     Schedule
+  </button>
+  <button onclick="location.href='travel.html'">
+    <i class="fa-solid fa-plane" style="color:rgb(25, 236, 240);"></i>
+    Travel Planner
   </button>
 </div>
 

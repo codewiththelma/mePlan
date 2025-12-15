@@ -1,4 +1,3 @@
-// calendar.js — Year view with dots + day popover
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
 import {
   getFirestore,
@@ -31,6 +30,11 @@ const yearMonthsEl = document.getElementById("yearMonths");
 const dayPopover = document.getElementById("dayPopover");
 const popoverDateLabel = document.getElementById("popoverDateLabel");
 const popoverEventsList = document.getElementById("popoverEvents");
+
+const optionsBtn = document.getElementById("optionsBtn");
+const optionsSheet = document.getElementById("optionsSheet");
+const optionsBackdrop = document.getElementById("optionsBackdrop");
+const optionsCloseBtn = document.getElementById("optionsCloseBtn");
 
 // --- State ---
 let currentYear;
@@ -66,17 +70,42 @@ function initTheme() {
 // DATA LOADING
 // ============================
 async function loadEvents() {
-  const snapshot = await getDocs(collection(db, "users", auth.currentUser.uid, "monthlyEvents"));
-  const allEvents = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+  const uid = auth.currentUser.uid;
 
+  // 1. Load monthly events
+  const monthlySnap = await getDocs(
+    collection(db, "users", uid, "monthlyEvents")
+  );
+  const monthlyEvents = monthlySnap.docs.map(d => ({
+    id: d.id,
+    source: "monthly",
+    ...d.data()
+  }));
+
+  // 2. Load content planner items
+  const contentSnap = await getDocs(
+    collection(db, "users", uid, "contents")
+  );
+  const contentEvents = contentSnap.docs.map(d => ({
+    id: d.id,
+    source: "content",
+    ...d.data()
+  }));
+
+  // 3. Merge both
+  const allEvents = [...monthlyEvents, ...contentEvents];
+
+  // 4. Group by date
   const map = {};
   allEvents.forEach(evt => {
     if (!evt.date) return;
     if (!map[evt.date]) map[evt.date] = [];
     map[evt.date].push(evt);
   });
+
   eventsByDate = map;
 }
+
 
 // ============================
 // RENDER YEAR

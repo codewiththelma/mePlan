@@ -50,7 +50,10 @@ const successPopup = document.getElementById("successPopup");
 const successMessageEl = document.getElementById("successMessage");
 
 const dateStrip = document.getElementById("habitDateStrip");
-
+const optionsBtn = document.getElementById("optionsBtn");
+const optionsSheet = document.getElementById("optionsSheet");
+const optionsBackdrop = document.getElementById("optionsBackdrop");
+const optionsCloseBtn = document.getElementById("optionsCloseBtn");
 // ===============================
 //  STATE
 // ===============================

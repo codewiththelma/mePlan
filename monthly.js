@@ -62,7 +62,10 @@ let pendingDeleteId = null;
 // ---- Success Popup ----
 const successPopup = document.getElementById("successPopup");
 const successMessageEl = document.getElementById("successMessage");
-
+const optionsBtn = document.getElementById("optionsBtn");
+const optionsSheet = document.getElementById("optionsSheet");
+const optionsBackdrop = document.getElementById("optionsBackdrop");
+const optionsCloseBtn = document.getElementById("optionsCloseBtn");
 // ---- State ----
 let currentYear;
 let currentMonthIndex;
@@ -272,6 +275,10 @@ function clearColorSelection() {
 }
 
 function selectColor(color) {
+  // clear previous selection
+  colorDots.forEach(dot => dot.classList.remove("color-selected"));
+
+  // activate selected color
   colorDots.forEach(dot => {
     if (dot.dataset.color === color) {
       dot.classList.add("color-selected");

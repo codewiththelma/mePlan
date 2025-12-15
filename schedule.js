@@ -73,7 +73,10 @@ const cancelDelete = document.getElementById("cancelDelete");
 const confirmDelete = document.getElementById("confirmDelete");
 const successPopup = document.getElementById("successPopup");
 const successMessageEl = document.getElementById("successMessage");
-
+const optionsBtn = document.getElementById("optionsBtn");
+const optionsSheet = document.getElementById("optionsSheet");
+const optionsBackdrop = document.getElementById("optionsBackdrop");
+const optionsCloseBtn = document.getElementById("optionsCloseBtn");
 let pendingDeleteId = null;
 
 // ---------------------------

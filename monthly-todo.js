@@ -62,7 +62,10 @@ let pendingDeleteId = null;
 // Success popup
 const successPopup = document.getElementById("successPopup");
 const successMessageEl = document.getElementById("successMessage");
-
+const optionsBtn = document.getElementById("optionsBtn");
+const optionsSheet = document.getElementById("optionsSheet");
+const optionsBackdrop = document.getElementById("optionsBackdrop");
+const optionsCloseBtn = document.getElementById("optionsCloseBtn");
 // ---- State ----
 let currentYear;
 let currentMonthIndex; // 0-11

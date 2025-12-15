@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mePlan+ – Content Planner</title>
+
+  <!-- Nunito -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="logo2.png">
+  <link rel="apple-touch-icon" href="logo2.png">
+
+
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+  <script>
+      const theme =
+        localStorage.getItem('meplan-theme') ||
+        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+      document.documentElement.setAttribute('data-theme', theme);
+    </script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-root spa-preload">
+  <div id="preloader" class="preloader">
+  <div class="loader-dumbbell">
+  <i class="fa-solid fa-spinner"></i>
+</div>
+</div>
+
+    <!-- HEADER -->
+    <header class="top-bar">
+      <div class="brand monthly-brand">
+        <button class="back-button" onclick="window.history.back();">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <span class="brand-name">Content Planner<span class="brand-plus">+</span></span>
+      </div>
+
+      <div class="top-bar-side">
+      <button id="themeToggle" class="icon-button" aria-label="Toggle theme">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+      <button id="profileBtn" class="icon-button" onclick="window.location='profile.html'">
+      <i class="fa-solid fa-user"></i>
+    </button>
+    </div>
+    </header>
+
+    <main class="main-content monthly-main">
+
+      <!-- MONTH NAVIGATION -->
+      <section class="month-controls card">
+        <div class="month-nav">
+          <button id="prevMonth" class="month-arrow">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+
+          <div class="month-title-wrap">
+            <h1 id="monthTitle" class="month-title">Month</h1>
+            <p class="month-subtitle">Tap a day to add...</p>
+
+            <div class="view-toggle">
+              <button id="overviewBtn" class="toggle-btn active">Grid</button>
+              <button id="listBtn" class="toggle-btn">List</button>
+            </div>
+
+          </div>
+
+          <button id="nextMonth" class="month-arrow">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
+      </section>
+
+      <!-- WEEKDAYS -->
+       <div id="calendarSection">
+      <section class="calendar-header">
+        <div class="weekday">Mon</div>
+        <div class="weekday">Tue</div>
+        <div class="weekday">Wed</div>
+        <div class="weekday">Thu</div>
+        <div class="weekday">Fri</div>
+        <div class="weekday">Sat</div>
+        <div class="weekday">Sun</div>
+      </section>
+
+      <section id="calendarGrid" class="calendar-grid"></section>
+      </div>
+      <div id="listSection" class="hidden" >
+      <section id="contentListView" class="content-list"></section>
+      </div>
+    </main>
+
+    <!-- ONLY ADD BUTTON -->
+    <button id="addEventFab" class="fab-add">
+      <i class="fa-solid fa-plus"></i>
+    </button>
+
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav">
+      <button class="nav-item" onclick="window.location.href='index.html'">
+        <i class="fa-solid fa-house"></i>
+        <span>Home</span>
+      </button>
+      <button class="nav-item" onclick="window.location.href='calendar.html'">
+        <i class="fa-solid fa-calendar-days"></i>
+        <span>Calendar</span>
+      </button>
+      <button class="nav-item" id="optionsBtn">
+      <i class="fa-solid fa-circle-chevron-up"></i>
+      <span>More</span>
+      </button>
+    </nav>
+
+    <!-- EVENT MODAL -->
+    <div id="eventModal" class="modal-overlay hidden">
+      <div class="modal-card">
+
+        <div class="modal-header">
+          <h2 id="modalTitle">Add Event</h2>
+          <button id="closeModal" class="modal-close">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <form id="eventForm" class="modal-body">
+          <input type="hidden" id="eventId" />
+
+          <label class="field-label">
+            Title
+            <input id="eventTitle" class="input" required>
+          </label>
+
+          <label class="field-label">
+            Platform
+            <input id="eventPlatform" class="input" placeholder="Instagram, TikTok, YouTube…">
+          </label>
+
+          <label class="field-label">
+            Description
+            <textarea id="eventDescription"
+                      class="input"
+                      rows="4"
+                      placeholder="Optional notes…"></textarea>
+          </label>
+
+
+          <label class="field-label">
+            Date
+            <input type="date" id="eventDateInput" class="input" required />
+          </label>
+
+          <label class="field-label">
+            Colour
+            <div class="color-row">
+              <button type="button" class="color-dot" data-color="#f97373"></button>
+              <button type="button" class="color-dot" data-color="#fb923c"></button>
+              <button type="button" class="color-dot" data-color="#ec4899"></button>
+              <button type="button" class="color-dot" data-color="#4ade80"></button>
+              <button type="button" class="color-dot" data-color="#38bdf8"></button>
+              <button type="button" class="color-dot" data-color="#a855f7"></button>
+              <button type="button" class="color-dot" data-color="#facc15"></button>
+            </div>
+
+            <input type="hidden" id="eventColorInput" required />
+          </label>
+
+          <div class="modal-footer">
+            <button type="button" id="deleteEventBtn" class="btn-outline hidden">
+              <i class="fa-solid fa-trash"></i> Delete
+            </button>
+
+            <button type="submit" class="btn-primary">
+              <i class="fa-solid fa-check"></i> Save
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+
+  </div>
+  <!-- CUSTOM DELETE POPUP -->
+    <div id="deletePopup" class="popup-overlay hidden">
+    <div class="popup-card">
+        <p class="popup-text">Delete this event?</p>
+
+        <div class="popup-buttons">
+        <button id="cancelDelete" class="popup-btn cancel-btn">Cancel</button>
+        <button id="confirmDelete" class="popup-btn delete-btn">Delete</button>
+        </div>
+    </div>
+    </div>
+
+    <!-- SUCCESS POPUP -->
+    <div id="successPopup" class="success-overlay hidden">
+    <div class="success-card">
+        <i class="fa-solid fa-check-circle success-icon"></i>
+        <p id="successMessage" class="success-text">Saved!</p>
+    </div>
+    </div>
+
+  <div id="optionsSheet" class="options-sheet hidden">
+  <div class="options-handle"></div>
+  <div class="options-close" id="optionsCloseBtn">
+  <i class="fa-solid fa-xmark"></i>
+  </div>
+
+
+  <div class="options-grid">
+  <button onclick="location.href='monthly.html'">
+    <i class="fa-solid fa-calendar" style="color:rgb(25, 250, 40);"></i>
+    Monthly Planner
+  </button>
+
+  <button onclick="location.href='monthly-todo.html'">
+    <i class="fa-solid fa-list-check" style="color:rgb(247, 43, 189);"></i>
+    Monthly To-Do
+  </button>
+
+  <button onclick="location.href='yearly-checklist.html'">
+    <i class="fa-solid fa-bullseye" style="color:rgb(243, 150, 19);"></i>
+    Checklist
+  </button>
+
+  <button onclick="location.href='savings.html'">
+    <i class="fa-solid fa-piggy-bank" style="color:rgb(239, 21, 21);"></i>
+    Savings
+  </button>
+
+  <button onclick="location.href='habits.html'">
+    <i class="fa-solid fa-lightbulb" style="color:rgb(42, 8, 234);"></i>
+    Habits
+  </button>
+
+  <button onclick="location.href='schedule-list.html'">
+    <i class="fa-solid fa-clock" style="color:rgb(251, 247, 45);"></i>
+    Schedule
+  </button>
+  <button onclick="location.href='travel.html'">
+    <i class="fa-solid fa-plane" style="color:rgb(25, 236, 240);"></i>
+    Travel Planner
+  </button>
+  
+  <button class="more-active">
+    <i class="fa-solid fa-folder-open" style="color:rgb(28, 225, 133);"></i>
+    Content Planner
+  </button>
+</div>
+
+</div>
+
+<div id="optionsBackdrop" class="options-backdrop hidden"></div>
+
+  <script type="module" src="contents.js"></script>
+</body>
+</html>

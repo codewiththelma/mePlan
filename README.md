@@ -1,6 +1,6 @@
 # **mePlan+**
 
-mePlan+ is a soft, modern, **mobile-first** productivity app that helps you track your **habits**, **monthly plans**, **checklists**, **savings**, and **daily schedule** — all in one calm, pastel interface.
+mePlan+ is a soft, modern, **mobile-first** productivity app that helps you track your **habits**, **monthly plans**, **checklists**, **savings**, and **daily schedule** — all in one interface.
 
 Designed to be simple, aesthetic, and easy to use on **phones** and **iPads**.
 
@@ -9,12 +9,6 @@ Designed to be simple, aesthetic, and easy to use on **phones** and **iPads**.
 ## 🔗 **Live App**
 
 ### 👉 https://codewiththelma.github.io/mePlan/
-
-> ⚠️ **Best experience:**  
-> mePlan+ is optimized for **mobile & tablet screens**.  
-> Desktop support is limited (UI not yet responsive for large screens).
-
----
 
 ## 📱 **Install as a Standalone App (Add to Home Screen)**  
 mePlan+ is a PWA — meaning you can install it like a real app.
@@ -38,61 +32,3 @@ mePlan+ is a PWA — meaning you can install it like a real app.
 4. Confirm
 
 ➡️ The app installs like a native Android app.
-
----
-
-## ✨ **Features Overview**
-
-### 🔥 **Habit Tracker**
-- Daily check-in  
-- Smart streak system  
-
-### 🗓 **Monthly Planner**
-- Add/edit events  
-- Color-coded layout  
-- Full monthly calendar
-
-### 📝 **Monthly To-Do List**
-- Monthly bucket list  
-- Quick add/delete  
-
-### 🎯 **Yearly Checklist**
-- Categorized yearly goals  
-- Progress tracking  
-
-### 💰 **Savings Tracker**
-- Create savings goals  
-- Track deposits/withdrawals  
-- Visual progress ring  
-- Transaction history  
-
-### ⏰ **Schedule**
-- Hour-by-hour day planner  
-- Pastel event bars  
-- iOS-style popover view  
-
-### 👤 **Profile + Authentication**
-- Sign in with **email or username**  
-- Change password  
-- Edit username  
-- Delete account  
-- Dark/light theme toggle  
----
-
-## 🛠 **Tech Used**
-- **HTML, CSS, JavaScript**  
-- **Firebase Authentication**  
-- **Firebase Firestore Database**  
-- **Progressive Web App (PWA)**  
-- **Font Awesome**  
-
----
-
-## 📌 **Notes**
-- Designed for **mobile + iPad**   
-- Syncs securely via Firebase  
-- No backend server required  
----
-
-## 👩‍💻 **Developer**
-Built with love by **Thelma** 🩷  
